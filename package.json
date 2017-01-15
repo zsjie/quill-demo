@@ -1,0 +1,33 @@
+{
+  "name": "quill-demo",
+  "version": "1.0.0",
+  "description": "quill demo",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://zsjie@github.com/zsjie/quill-demo.git"
+  },
+  "keywords": [
+    "quill",
+    "demo"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zsjie/quill-demo/issues"
+  },
+  "homepage": "https://github.com/zsjie/quill-demo#readme",
+  "dependencies": {
+    "quill": "^1.1.9"
+  },
+  "devDependencies": {
+    "grunt": "^1.0.1",
+    "grunt-contrib-connect": "^1.0.2",
+    "grunt-contrib-watch": "^1.0.0",
+    "load-grunt-tasks": "^3.5.2",
+    "serve-static": "^1.11.1"
+  }
+}
