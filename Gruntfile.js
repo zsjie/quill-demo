@@ -40,7 +40,9 @@ module.exports = function (grunt) {
     }
   })
 
-  grunt.registerTask('serve', 'start the grunt server',function (target) {
+  grunt.registerTask('server', 'start the grunt server',function (target) {
     grunt.task.run(['connect', 'watch']);
   });
+
+  grunt.registerTask('default', ['server'])
 }

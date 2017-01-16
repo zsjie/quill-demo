@@ -4,29 +4,42 @@
 	<meta charset="UTF-8">
 	<title>Quill Demo</title>
 	<!-- Include Quill stylesheet -->
-	<link href="https://cdn.quilljs.com/1.0.0/quill.snow.css" rel="stylesheet">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css" rel="stylesheet">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css" rel="stylesheet">
+	<link href="//cdn.quilljs.com/1.1.10/quill.bubble.css" rel="stylesheet">
+	<link href="//cdn.quilljs.com/1.1.10/quill.snow.css" rel="stylesheet">
+	<link href="/styles/main.css" rel="stylesheet">
 </head>
 <body>
-	<!-- Create the toolbar container -->
-	<div id="toolbar">
-	  <button class="ql-bold">Bold</button>
-	  <button class="ql-italic">Italic</button>
-	</div>
 
 	<!-- Create the editor container -->
-	<div id="editor">
-	  <p>Hello World!</p>
+	<div id="editor-container">
 	</div>
 
 	<!-- Include the Quill library -->
-	<script src="https://cdn.quilljs.com/1.0.0/quill.js"></script>
+	<script src="//cdn.quilljs.com/1.1.10/quill.js"></script>
 
 	<!-- Initialize Quill editor -->
 	<script>
-	  var editor = new Quill('#editor', {
-	    modules: { toolbar: '#toolbar' },
-	    theme: 'snow'
-	  });
+		const Delta = Quill.import('delta')
+	  let quill = new Quill('#editor-container', {
+			modules: {
+				toolbar: [
+					[{ header: [1, 2, false] }],
+					['bold', 'italic', 'underline'],
+					['image', 'code-block']
+				]
+			},
+			placeholder: 'Compose an epic...',
+			theme: 'snow'  // or 'bubble'
+		});
+
+		let change = new Delta()
+		quill.on('text-change', function(delta) {
+			console.log(delta)
+			change = change.compose(delta);
+		});
 	</script>
+
 </body>
 </html>
