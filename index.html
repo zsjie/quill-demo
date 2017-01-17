@@ -1,45 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-	<meta charset="UTF-8">
-	<title>Quill Demo</title>
-	<!-- Include Quill stylesheet -->
-	<link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css" rel="stylesheet">
-	<link href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css" rel="stylesheet">
-	<link href="//cdn.quilljs.com/1.1.10/quill.bubble.css" rel="stylesheet">
-	<link href="//cdn.quilljs.com/1.1.10/quill.snow.css" rel="stylesheet">
-	<link href="/styles/main.css" rel="stylesheet">
+  <meta charset="UTF-8">
+  <title>Quill Demo</title>
+  <!-- Include Quill stylesheet -->
+  <link href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.3.0/styles/monokai-sublime.min.css" rel="stylesheet">
+  <link href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css" rel="stylesheet">
+  <link href="//cdn.quilljs.com/1.1.10/quill.bubble.css" rel="stylesheet">
+  <link href="//cdn.quilljs.com/1.1.10/quill.snow.css" rel="stylesheet">
+  <link href="/styles/main.css" rel="stylesheet">
 </head>
+
 <body>
 
-	<!-- Create the editor container -->
-	<div id="editor-container">
-	</div>
+  <!-- Create the editor container -->
+  <div id="editor-container"></div>
 
-	<!-- Include the Quill library -->
-	<script src="//cdn.quilljs.com/1.1.10/quill.js"></script>
+  <!-- Include the Quill library -->
+  <script src="//cdn.quilljs.com/1.1.10/quill.js"></script>
 
-	<!-- Initialize Quill editor -->
-	<script>
-		const Delta = Quill.import('delta')
-	  let quill = new Quill('#editor-container', {
-			modules: {
-				toolbar: [
-					[{ header: [1, 2, false] }],
-					['bold', 'italic', 'underline'],
-					['image', 'code-block']
-				]
-			},
-			placeholder: 'Compose an epic...',
-			theme: 'snow'  // or 'bubble'
-		});
-
-		let change = new Delta()
-		quill.on('text-change', function(delta) {
-			console.log(delta)
-			change = change.compose(delta);
-		});
-	</script>
+  <!-- Initialize Quill editor -->
+  <script src="./scripts/utils/lstorage.js"></script>
+  <script src="./scripts/main.js"></script>
 
 </body>
+
 </html>
