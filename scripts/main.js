@@ -1,3 +1,6 @@
+import Quill from 'quill'
+import lstorage from './utils/lstorage'
+
 const Delta = Quill.import('delta')
 let quill = new Quill('#editor-container', {
   modules: {
@@ -6,7 +9,7 @@ let quill = new Quill('#editor-container', {
         header: [1, 2, false]
       }],
       ['bold', 'italic', 'underline'],
-      ['image', 'code-block']
+      ['image', { list: 'ordered' }]
     ]
   },
   placeholder: 'Compose an epic...',
