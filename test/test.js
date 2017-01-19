@@ -1,5 +1,3 @@
-var a = 2
+const marked = require('marked')
 
-var b = JSON.stringify(a)
-console.log(b, typeof b)
-console.log(JSON.parse(null))
+console.log(marked('**hello**'))

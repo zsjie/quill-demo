@@ -23,3 +23,39 @@ let t = {
     {"insert": " the quill variable in the demo\n"}
   ]
 }
+
+let token = {
+  type: 'heading',
+  depth: 2,
+  text: 'foo',
+  lang: 'java'
+}
+
+let types = [
+  'space',
+  'code',
+  'heading',
+  'table',
+  'hr',
+  'blockquote_start',
+  'blockquote_end',
+  'list_start',
+  'loose_item_start',
+  'list_item_start',
+  'list_item_end',
+  'list_end',
+  'paragraph',
+  'html',
+  'text'
+]
+
+let possibleAttributes = [
+  'text',
+  'depth',
+  'header',
+  'cells',
+  'align',
+  'lang',
+]
+
+// tokens.links
