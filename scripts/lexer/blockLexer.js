@@ -54,8 +54,8 @@ Lexer.prototype.lex = function(src) {
  */
 
 Lexer.prototype.token = function(src, top, bq) {
-  let src = src.replace(/^ +$/gm, '')
-    , next
+  src = src.replace(/^ +$/gm, '')
+  let next
     , loose
     , cap
     , bull

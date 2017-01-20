@@ -1,3 +1,5 @@
+import DeltaMaker from '../DeltaMaker'
+
 export default {
   gfm: true,
   tables: true,
@@ -12,6 +14,6 @@ export default {
   langPrefix: 'lang-',
   smartypants: false,
   headerPrefix: '',
-  renderer: new Renderer,
+  deltaMaker: new DeltaMaker,
   xhtml: false
 }

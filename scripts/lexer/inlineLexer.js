@@ -1,4 +1,6 @@
 import defaults from '../defaults'
+import DeltaMaker from '../DeltaMaker'
+import inline from '../regexp/inlineLevel'
 import { escape } from '../utils'
 
 /**
@@ -9,9 +11,8 @@ function InlineLexer(links, options) {
   this.options = options || defaults
   this.links = links
   this.rules = inline.normal
-  // TODO renderer
-  this.renderer = this.options.renderer || new Renderer
-  this.renderer.options = this.options
+  this.deltaMaker = this.options.deltaMaker || new DeltaMaker
+  this.deltaMaker.options = this.options
   
   if (!this.links) {
     throw new
@@ -49,14 +50,15 @@ InlineLexer.output = function(src, links, options) {
  */
 
 InlineLexer.prototype.output = function(src) {
-  let out = ''
-  let link, text, href, cap
+  let out = []
+  let link, text, href, cap, delta
   
   while (src) {
     // escape
     if (cap = this.rules.escape.exec(src)) {
       src = src.substring(cap[0].length)
-      out += cap[1]
+      delta = this.deltaMaker.escape(cap[1])
+      out.push(delta)
       continue
     }
     
@@ -72,7 +74,8 @@ InlineLexer.prototype.output = function(src) {
         text = escape(cap[1]);
         href = text;
       }
-      out += this.renderer.link(href, null, text)
+      delta = this.deltaMaker.link(href, null, text)
+      out.push(delta)
       continue
     }
     
@@ -81,8 +84,8 @@ InlineLexer.prototype.output = function(src) {
       src = src.substring(cap[0].length)
       text = escape(cap[1])
       href = text
-      // TODO renderer.link
-      out += this.renderer.link(href, null, text)
+      delta = this.deltaMaker.link(href, null, text)
+      out.push(delta)
       continue
     }
     
@@ -94,11 +97,13 @@ InlineLexer.prototype.output = function(src) {
         this.inLink = false
       }
       src = src.substring(cap[0].length)
-      out += this.options.sanitize
+      text = this.options.sanitize
         ? this.options.sanitizer
           ? this.options.sanitizer(cap[0])
           : escape(cap[0])
         : cap[0]
+      delta = this.deltaMaker.tag(text)
+      out.push(delta)
       continue
     }
     
@@ -134,48 +139,45 @@ InlineLexer.prototype.output = function(src) {
     // strong
     if (cap = this.rules.strong.exec(src)) {
       src = src.substring(cap[0].length)
-      // TODO render.strong
-      out += this.renderer.strong(this.output(cap[2] || cap[1]))
+      delta = this.deltaMaker.strong(this.output(cap[2] || cap[1]))
+      out = out.concat(delta)
       continue
     }
     
     // em
     if (cap = this.rules.em.exec(src)) {
       src = src.substring(cap[0].length)
-      // TODO renderer.em
-      out += this.renderer.em(this.output(cap[2] || cap[1]))
+      delta = this.deltaMaker.em(this.output(cap[2] || cap[1]))
+      out = out.concat(delta)
       continue
     }
     
     // code
     if (cap = this.rules.code.exec(src)) {
       src = src.substring(cap[0].length)
-      // TODO renderer.codespan
-      out += this.renderer.codespan(escape(cap[2], true))
+      out += this.deltaMaker.codespan(escape(cap[2], true))
       continue
     }
     
     // br
     if (cap = this.rules.br.exec(src)) {
       src = src.substring(cap[0].length)
-      // TODO renderer.br
-      out += this.renderer.br()
+      out += this.deltaMaker.br()
       continue
     }
     
     // del (gfm)
     if (cap = this.rules.del.exec(src)) {
       src = src.substring(cap[0].length)
-      // TODO renderer.del
-      out += this.renderer.del(this.output(cap[1]))
+      out += this.deltaMaker.del(this.output(cap[1]))
       continue
     }
     
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length)
-      // TODO renderer.text
-      out += this.renderer.text(escape(this.smartypants(cap[0])))
+      delta = this.deltaMaker.text(escape(this.smartypants(cap[0])))
+      out.push(delta)
       continue
     }
     
@@ -197,8 +199,8 @@ InlineLexer.prototype.outputLink = function(cap, link) {
   let title = link.title ? escape(link.title) : null
   
   return cap[0].charAt(0) !== '!'
-    ? this.renderer.link(href, title, this.output(cap[1]))
-    : this.renderer.image(href, title, escape(cap[1]))
+    ? this.deltaMaker.link(href, title, this.output(cap[1]))
+    : this.deltaMaker.image(href, title, escape(cap[1]))
 }
 
 /**
@@ -245,3 +247,5 @@ InlineLexer.prototype.mangle = function(text) {
   
   return out
 }
+
+export default InlineLexer

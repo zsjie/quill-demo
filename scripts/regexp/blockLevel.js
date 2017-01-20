@@ -1,6 +1,6 @@
 import { replace, merge } from '../utils'
 
-let block = block = {
+let block = {
   newline: /^\n+/,
   code: /^( {4}[^\n]+\n*)+/,
   fences: noop,
