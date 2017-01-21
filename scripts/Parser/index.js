@@ -31,6 +31,10 @@ Parser.parse = function(src, options, deltaMaker) {
 Parser.prototype.parse = function(src) {
   this.inline = new InlineLexer(src.links, this.options, this.deltaMaker)
   this.tokens = src.reverse()
+  let debug = true
+  debug && this.tokens.forEach(ele => {
+    console.log(ele)
+  })
   
   let out = []
   while (this.next()) {
@@ -77,7 +81,7 @@ Parser.prototype.parseText = function() {
 Parser.prototype.tok = function() {
   switch (this.token.type) {
     case 'space': {
-      return ''
+      return [{ insert: '' }]
     }
     case 'hr': {
       return this.deltaMaker.hr()
@@ -85,8 +89,7 @@ Parser.prototype.tok = function() {
     case 'heading': {
       return this.deltaMaker.heading(
         this.inline.output(this.token.text),
-        this.token.depth,
-        this.token.text)
+        this.token.depth)
     }
     case 'code': {
       return this.deltaMaker.code(this.token.text,
@@ -129,43 +132,55 @@ Parser.prototype.tok = function() {
       return this.deltaMaker.table(header, body)
     }
     case 'blockquote_start': {
-      let body = ''
+      let deltas = []
       
       while (this.next().type !== 'blockquote_end') {
-        body += this.tok()
+        deltas = deltas.concat(this.tok())
       }
+      deltas.push({
+        insert: '\n',
+        attributes: {
+          blockquote: true
+        }
+      })
       
-      return this.deltaMaker.blockquote(body)
+      return this.deltaMaker.blockquote(deltas)
     }
     case 'list_start': {
-      let body = ''
-        , ordered = this.token.ordered
+      let deltas = [{ insert: '\n' }]
+      let type = this.token.ordered ? 'ordered' : 'bullet'
       
       while (this.next().type !== 'list_end') {
-        body += this.tok()
+        deltas = deltas.concat(this.tok())
+        deltas.push({
+          attributes: { list: type },
+          insert: '\n'
+        })
       }
       
-      return this.deltaMaker.list(body, ordered)
+      return this.deltaMaker.list(deltas)
     }
     case 'list_item_start': {
-      let body = ''
+      let body = []
+      let deltas = []
       
       while (this.next().type !== 'list_item_end') {
-        body += this.token.type === 'text'
+        body = this.token.type === 'text'
           ? this.parseText()
           : this.tok()
+        deltas = deltas.concat(body)
       }
       
-      return this.deltaMaker.listitem(body)
+      return this.deltaMaker.listitem(deltas)
     }
     case 'loose_item_start': {
-      let body = ''
+      let deltas = []
       
       while (this.next().type !== 'list_item_end') {
-        body += this.tok()
+        deltas.push(this.tok())
       }
       
-      return this.deltaMaker.listitem(body)
+      return this.deltaMaker.listitem(deltas)
     }
     case 'html': {
       let html = !this.token.pre && !this.options.pedantic
@@ -174,7 +189,8 @@ Parser.prototype.tok = function() {
       return this.deltaMaker.html(html)
     }
     case 'paragraph': {
-      return this.inline.output(this.token.text)
+      let deltas = this.inline.output(this.token.text)
+      return this.deltaMaker.paragraph(deltas)
     }
     case 'text': {
       return this.parseText()

@@ -8,11 +8,10 @@ const Delta = Quill.import('delta')
 let quill = new Quill('#editor-container', {
   modules: {
     toolbar: [
-      [{
-        header: [1, 2, false]
-      }],
-      ['bold', 'italic', 'link'],
-      ['image', { list: 'ordered' }]
+      [{ header: 1 }, { header: 2 }],
+      ['bold', 'italic', 'underline'],
+      [{ list: 'ordered' }, { list: 'bullet' }],
+      ['link', 'blockquote', 'image']
     ]
   },
   placeholder: 'Compose an epic...',
@@ -35,9 +34,10 @@ setInterval(function() {
 }, 5 * 1000)
 
 function loadContent() {
-  let content = {
-    ops: [{"insert":"Open your "},{"insert":"developer","attributes":{"bold":true}},{"insert":" console and try out Quill’s APIs "},{"insert":"on your new bold and italic","attributes":{"bold":true}},{"insert":" formats"},{"insert":"! Make sure to set the "},{"insert":"context","attributes":{"bold":true}},{"insert":" to the correct CodePen iframe to be able to "},{"insert":"access","attributes":{"bold":true}},{"insert":" the quill variable in the demo"}]
-  }
+  let str = '[**quill** *js*](quilljs.com)'
+  let tokens = Lexer.lex(str)
+  let content = Parser.parse(tokens)
+  console.log(content)
   if (content) {
     quill.setContents(content)
   }
@@ -46,7 +46,3 @@ function loadContent() {
 function save(content) { // using localStorage
   lstorage.set('content', content)
 }
-
-let str = 'Open your ***developer*** console and try out Quill’s APIs **on your new bold and italic** formats! Make sure to set the **context** to the correct CodePen iframe to be able to **access** the quill variable in the demo'
-
-console.log(Parser.parse(Lexer.lex('***c***')))

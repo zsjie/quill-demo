@@ -111,10 +111,11 @@ InlineLexer.prototype.output = function(src) {
     if (cap = this.rules.link.exec(src)) {
       src = src.substring(cap[0].length)
       this.inLink = true
-      out += this.outputLink(cap, {
+      delta = this.outputLink(cap, {
         href: cap[2],
         title: cap[3]
       })
+      out = out.concat(delta)
       this.inLink = false
       continue
     }
