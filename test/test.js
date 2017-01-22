@@ -1,6 +1,7 @@
 const marked = require('marked')
 
-console.log(marked('out list\n- item1\n- item2\n- item3\nout list'))
+let s = '######'
+console.log(s.slice(0, 5))
 
 let a = {
   "ops": [
@@ -24,11 +25,11 @@ let a = {
 }
 
 let b = {
-  "ops": [{
-    "attributes": {"bold": true, "link": "quilljs.com"},
-    "insert":     "cdd"
-  }, {"attributes": {"link": "quilljs.com"}, "insert": " "}, {
-    "attributes": {"italic": true, "link": "quilljs.com"},
-    "insert":     "badecd"
-  }, {"insert": "\n\n"}, {"attributes": {"italic": true}, "insert": "acd"}, {"insert": "\n"}]
+  "ops": [{"insert": "测试标题含有各种格式"}, {
+    "attributes": {"bold": true},
+    "insert":     "粗体"
+  }, {"attributes": {"italic": true}, "insert": "斜体"}, {
+    "attributes": {"link": "quilljs.com"},
+    "insert":     "链接"
+  }, {"attributes": {"header": 1}, "insert": "\n"}]
 }

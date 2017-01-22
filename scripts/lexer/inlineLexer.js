@@ -153,6 +153,14 @@ InlineLexer.prototype.output = function(src) {
       continue
     }
     
+    // u
+    if (cap = this.rules.u.exec(src)) {
+      src = src.substring(cap[0].length)
+      delta = this.deltaMaker.u(this.output(cap[2] || cap[1]))
+      out = out.concat(delta)
+      continue
+    }
+    
     // code
     if (cap = this.rules.code.exec(src)) {
       src = src.substring(cap[0].length)

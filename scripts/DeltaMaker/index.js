@@ -43,35 +43,30 @@ DeltaMaker.prototype.tablecell = function (content, flags) {}
 
 // span level DeltaMaker
 DeltaMaker.prototype.strong = function (deltas) {
-  if (Array.isArray(deltas)) {
-    return deltas.map((delta) => {
-      delta.attributes = delta.attributes || {}
-      delta.attributes.bold = true
-      
-      return delta
-    })
-  }
-  
-  return [{
-    insert: deltas,
-    attributes: { bold: true }
-  }]
+  return deltas.map((delta) => {
+    delta.attributes = delta.attributes || {}
+    delta.attributes.bold = true
+    
+    return delta
+  })
 }
 
 DeltaMaker.prototype.em = function (deltas) {
-  if (Array.isArray(deltas)) {
-    return deltas.map((delta) => {
-      delta.attributes = delta.attributes || {}
-      delta.attributes.italic = true
-      
-      return delta
-    })
-  }
-  
-  return [{
-    insert: deltas,
-    attributes: { italic: true }
-  }]
+  return deltas.map((delta) => {
+    delta.attributes = delta.attributes || {}
+    delta.attributes.italic = true
+    
+    return delta
+  })
+}
+
+DeltaMaker.prototype.u = function (deltas) {
+  return deltas.map((delta) => {
+    delta.attributes = delta.attributes || {}
+    delta.attributes.underline = true
+    
+    return delta
+  })
 }
 
 DeltaMaker.prototype.codespan = function (text) {}

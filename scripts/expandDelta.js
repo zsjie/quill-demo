@@ -1,23 +1,36 @@
 import formatter from './formatter'
 
-export default function expand (delta) {
+export default function (delta) {
   let ops = delta.ops
+  let out = ''
+  let newLine = ''
   
-  return ops.reduce((preVal, op) => {
+  ops.forEach(op => {
     let txt = op.insert
+    let attributes = op.attributes || {}
     
-    if (op.attributes.bold) {
-      txt = formatter.bold(txt)
+    if (txt !== '\n') {
+      let lastNCIndex = txt.lastIndexOf('\n')
+      
+      if (lastNCIndex !== -1) {
+        newLine += txt.slice(0, lastNCIndex + 1)
+        out += newLine
+        newLine = ''
+        txt = txt.slice(lastNCIndex + 1)
+      }
+      
+      Object.keys(attributes).forEach(name => {
+        txt = formatter(txt, name, attributes[name])
+      })
+      newLine += txt
+    } else {
+      Object.keys(attributes).forEach(name => {
+        newLine = formatter(newLine, name, attributes[name])
+      })
+      out += (newLine + txt)
+      newLine = ''
     }
-    
-    if (op.attributes.italic) {
-      txt = formatter.italic(txt)
-    }
-    
-    if (op.attributes.underline) {
-      txt = formatter.underline(txt)
-    }
-    
-    return preVal + txt
-  }, '')
+  })
+  
+  return out
 }

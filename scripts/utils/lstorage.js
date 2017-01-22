@@ -31,18 +31,9 @@ function stringify(value) {
 }
 
 function parse(value) {
-  let numReg = new RegExp('[0-9]+', 'g')
-  let jsonReg = new RegExp('[\{\[](.)*[\}\]', 'g')
-  
   if (!value) return null
   
-  if (value.match(numReg)) {
-    return parseInt(value, 10)
-  }
-  
-  if (value.match(jsonReg)) {
-    return JSON.parse(value)
-  }
+  return JSON.parse(value)
 }
 
 export default lstorage
