@@ -63,14 +63,15 @@ function save(content) { // using localStorage
 
 const modal = document.querySelector('.modal-bg')
 const mdBtn = document.querySelector('#js-md-btn')
-const mdContent = document.querySelector('.md-content p')
+const mdContent = document.querySelector('.md-content')
+const txt = mdContent.querySelector('p')
 
 mdBtn.addEventListener('click', () => {
   let deltas = quill.getContents()
   let md = expandDelta(deltas)
   console.log(md)
   
-  mdContent.innerHTML = md.replace(/\n/g, '<br>')
+  txt.innerHTML = md.replace(/\n/g, '<br>')
   
   modal.setAttribute('data-state', 'show')
 }, false)
