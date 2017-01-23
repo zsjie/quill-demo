@@ -1,3 +1,158 @@
+body {
+  min-width: 646px;
+  -webkit-font-smoothing: antialiased;
+  font-family: -apple-system,Helvetica Neue,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+}
+
+.container {
+  width: 61.8%;
+  max-width: 1160px;
+  margin: 0 auto;
+}
+
+.clearfix:after {
+  content: ' ';
+  display: table;
+  clear: both;
+}
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 900;
+  height: 37px;
+  width: 100%;
+  padding-top: 12px;
+  padding-bottom: 11px;
+  background-color: #fbfbfb;
+  border-bottom: 1pt solid #d0d4d9;
+}
+
+.bar-item {
+  float: right;
+}
+
+.bar-item input[type=button] {
+  outline: none;
+  border: 1px solid #ccc;
+  height: 38px;
+  font-size: 16px;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #a9a9a9;
+  cursor: pointer;
+  -webkit-transition: all ease .3s;
+  transition: all ease .3s;
+}
+
+.bar-item input[type=button]:hover {
+  color: #7b8994;
+}
+
 #editor-container {
-  height: 375px;
+  width: 646px;
+  margin: 93px auto 0;
+  /*border: 1px solid #ccc;*/
+}
+
+.ql-editor {
+  -webkit-font-smoothing: antialiased;
+  min-height: 38px;
+  margin: 0 0 100px;
+  padding: 0 0 100px;
+  color: #6d7075;
+}
+
+.ql-editor p {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  line-height: 30px;
+  min-height: 26px;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.ql-editor.ql-blank::before {
+  content: attr(data-placeholder)!important;
+  color: rgba(208,211,217,.6);
+  font-weight: 200;
+  font-style: normal;
+  font-size: 16px;
+  white-space: pre;
+  position: absolute;
+  left: 3px;
+  top: 14px;
+}
+
+.modal-bg {
+  position: fixed;
+  overflow: hidden;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  opacity: 0;
+  visibility: hidden;
+  z-index: 1000;
+  background: transparent;
+}
+
+.modal-bg[data-state=hide],
+.modal-bg[data-state=hide] .modal-bg-blur {
+  -webkit-animation: fadeOut .3s 0s forwards ease;
+  animation: fadeOut .3s 0s forwards ease;
+}
+
+.modal-bg[data-state=show],
+.modal-bg[data-state=show] .modal-bg-blur {
+  -webkit-animation: fadeIn .3s 0s forwards ease;
+  animation: fadeIn .3s 0s forwards ease;
+}
+
+.modal-bg .modal-bg-blur {
+  background: hsla(0,0%,98%,.98);
+  position: absolute;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  overflow: scroll;
+  visibility: hidden;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.modal-bg .modal-bg-blur.dark {
+  background: rgba(123,137,148,.65);
+}
+
+.md-content {
+  min-height: 300px;
+  margin: 40px auto;
+  background-color: #fff;
+  border-radius: 4px;
+  padding: 40px 25px;
+  color: #6d7075;
+}
+
+@keyframes fadeIn {
+  0% {
+    visibility: hidden;
+    opacity: 0;
+  }
+  100% {
+    visibility: visible;
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    visibility: visible;
+    opacity: 1;
+  }
+  100% {
+    visibility: hidden;
+    opacity: 0;
+  }
 }

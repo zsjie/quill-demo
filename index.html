@@ -13,10 +13,25 @@
 </head>
 
 <body>
+  <header class="navbar clearfix">
+    <div class="container clearfix">
+      <div class="bar-item">
+        <input type="button" id="js-md-btn" value="view markdown">
+      </div>
+    </div>
+  </header>
+
+  <!-- modal -->
+  <div class="modal-bg" data-state="hide">
+    <div class="modal-bg-blur dark">
+      <div class="md-content container">
+        <p></p>
+      </div>
+    </div>
+  </div>
 
   <!-- Create the editor container -->
   <div id="editor-container"></div>
-
 
   <!-- Initialize Quill editor -->
   <script src="/bundle.js"></script>
