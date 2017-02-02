@@ -1,6 +1,7 @@
 import expandDelta from '../scripts/expandDelta'
+import chai from 'chai'
 
-const expect = require('chai').expect
+const expect = chai.expect
 
 describe('expandDelta', () => {
   it('should expand delta to md', () => {
@@ -8,12 +9,15 @@ describe('expandDelta', () => {
       ops: [
         {
           "attributes": {"bold": true},
-          "insert": "Open your "
-        }
+          "insert": "Open your"
+        },
+        { insert: '\n' }
       ]
     }
     
     let md = expandDelta(delta)
-    expect(md).to.equal('**Open your **')
+    expect(md).to.equal('**Open your**\n')
   })
 })
+
+
