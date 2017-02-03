@@ -29,12 +29,16 @@ let quill = new Quill('#editor-container', {
 
 setTimeout(() => {
   let editorContainer = document.querySelector('#editor-container')
-  let insertBtns = document.querySelector('#insert-btns-tmpl')
-  editorContainer.appendChild(insertBtns.content)
+  let insertBtnsTmpl = document.querySelector('#insert-btns-tmpl')
+  editorContainer.appendChild(insertBtnsTmpl.content)
   
   let showBtn = document.querySelector('.insert-btn-show')
+  let insertBtns = document.querySelector('.insert-btns')
+  let addons = document.querySelector('.insert-btn-addons')
   showBtn.addEventListener('click', (event) => {
     insertBtns.classList.toggle('active')
+    showBtn.classList.toggle('insert-btn-show-rotate')
+    addons.classList.toggle('insert-btn-addons-hide')
   }, false)
 }, 0)
 
@@ -94,10 +98,14 @@ modal.addEventListener('click', (e) => {
   }
 }, false)
 
-// tool button
+/**
+ * tool button
+ */
 
 quill.on('selection-change', (range, oldRange, source) => {
-  let insertBtn = document.querySelector('.insert-btns')
+  let insertBtns = document.querySelector('.insert-btns')
+  let showBtn = document.querySelector('.insert-btn-show')
+  let addons = document.querySelector('.insert-btn-addons')
   
   if (range && source === 'user') {
     let index = range.index
@@ -107,15 +115,22 @@ quill.on('selection-change', (range, oldRange, source) => {
     
     if (inNewline) {
       let pos = quill.getBounds(index)
-      insertBtn.style.left = (pos.left - 60) + 'px'
-      insertBtn.style.top = (pos.top - 12) + 'px'
-      insertBtn.style.display = 'block'
+      insertBtns.style.left = (pos.left - 60) + 'px'
+      insertBtns.style.top = (pos.top - 12) + 'px'
+      insertBtns.style.display = 'block'
+      
+      if (insertBtns.classList.contains('active')) {
+        insertBtns.classList.toggle('active')
+        showBtn.classList.toggle('insert-btn-show-rotate')
+        addons.classList.toggle('insert-btn-addons-hide')
+      }
     } else {
-      insertBtn.style.display = 'none'
+      insertBtns.style.display = 'none'
+      addons.style.display = 'none'
     }
     
-  } else {
-    insertBtn.style.display = 'none'
+  } else { // editor blur
+    // insertBtn.style.display = 'none'
   }
 })
 

@@ -142,20 +142,61 @@ body {
   height: 46px;
   border: 1px solid rgba(208,211,217,1);
   border-radius: 24px;
+  background-color: #fff;
 }
 .insert-btns.active {
   border-radius: 2px;
+  box-shadow: 0 2px 20px 0 rgba(0,0,0,.08),
+  0 2px 9px 0 rgba(123,137,148,.08);
 }
 .insert-btn-show {
   display: inline-block;
   width: 44px;
   height: 44px;
-  line-height: 40px;
+  line-height: 48px;
   text-align: center;
-  font-size: 32px;
+  cursor: pointer;
+  font-size: 20px;
   color: #ddd;
+  -webkit-transform: rotate(0deg);
+  transform: rotate(0deg);
+  -webkit-transition: -webkit-transform .1s;
+  transition: -webkit-transform .1s;
+  transition: transform .1s;
+  transition: transform .1s,-webkit-transform .1s;
 }
-.insert-btns:hover .insert-btn-show  {
+.insert-btns .insert-btn-show:hover  {
+  color: #00a7e6;
+}
+.insert-btn-show.insert-btn-show-rotate {
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+  transition: transform .25s,-webkit-transform .25s;
+  border: none;
+}
+.insert-btn-addons {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  float: right;
+}
+.insert-btn-addons.insert-btn-addons-hide {
+  display: none;
+}
+.insert-btn-addons li {
+  display: inline-block;
+  padding-left: 0;
+  width: 44px;
+  height: 44px;
+  line-height: 48px;
+  margin-left: 20px;
+  text-align: center;
+  float: left;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 20px;
+}
+.insert-btn-addons li:hover {
   color: #00a7e6;
 }
 
