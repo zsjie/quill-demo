@@ -25,7 +25,19 @@ let quill = new Quill('#editor-container', {
   },
   placeholder: 'Compose an epic...',
   theme: 'bubble' // or 'bubble'
-});
+})
+
+setTimeout(() => {
+  let editorContainer = document.querySelector('#editor-container')
+  let insertBtns = document.querySelector('#insert-btns-tmpl')
+  editorContainer.appendChild(insertBtns.content)
+  
+  let showBtn = document.querySelector('.insert-btn-show')
+  showBtn.addEventListener('click', (event) => {
+    insertBtns.classList.toggle('active')
+  }, false)
+}, 0)
+
 
 loadContent()
 
@@ -81,3 +93,52 @@ modal.addEventListener('click', (e) => {
     modal.setAttribute('data-state', 'hide')
   }
 }, false)
+
+// tool button
+
+quill.on('selection-change', (range, oldRange, source) => {
+  let insertBtn = document.querySelector('.insert-btns')
+  
+  if (range && source === 'user') {
+    let index = range.index
+    let preIndex = index - 1 < 0 ? 0 : index - 1
+    let inNewline = (index === 0 && quill.getText(index, 1) === '\n') ||
+                    (index > 0 && quill.getText(preIndex, 2) === '\n\n')
+    
+    if (inNewline) {
+      let pos = quill.getBounds(index)
+      insertBtn.style.left = (pos.left - 60) + 'px'
+      insertBtn.style.top = (pos.top - 12) + 'px'
+      insertBtn.style.display = 'block'
+    } else {
+      insertBtn.style.display = 'none'
+    }
+    
+  } else {
+    insertBtn.style.display = 'none'
+  }
+})
+
+quill.on('text-change', (delta, oldDelta, source) => {
+  let insertBtn = document.querySelector('.insert-btns')
+  let range = quill.getSelection()
+  
+  if (range && source === 'user') {
+    let index = range.index
+    let preIndex = index - 1 < 0 ? 0 : index - 1
+    let inNewline = (index === 0 && quill.getText(index, 1) === '\n') ||
+      (index > 0 && quill.getText(preIndex, 2) === '\n\n')
+    
+    if (inNewline) {
+      let pos = quill.getBounds(index)
+      insertBtn.style.left = (pos.left - 60) + 'px'
+      insertBtn.style.top = (pos.top - 12) + 'px'
+      insertBtn.style.display = 'block'
+    } else {
+      insertBtn.style.display = 'none'
+    }
+    
+  } else {
+    insertBtn.style.display = 'none'
+  }
+})

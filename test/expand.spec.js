@@ -8,8 +8,8 @@ describe('expandDelta', () => {
     let delta = {
       ops: [
         {
-          "attributes": {"bold": true},
-          "insert": "Open your"
+          attributes: { bold : true },
+          insert : "Open your"
         },
         { insert: '\n' }
       ]
