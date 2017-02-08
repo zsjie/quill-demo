@@ -1,4 +1,4 @@
-import DeltaMaker from '../DeltaMaker'
+import DeltaMaker from '../DeltaMaker.js'
 
 export default {
   gfm: true,

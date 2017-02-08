@@ -1,35 +1,16 @@
-const marked = require('marked')
+import Parser from '../scripts/Parser.js'
+import Lexer from '../scripts/lexer/blockLexer.js'
+import marked from 'marked'
 
-let s = '######'
-console.log(s.slice(0, 5))
+const str = `## 存储格式
+使用 Markdown
+> quote
+## 安全性`
 
-let a = {
-  "ops": [
-    {"insert": "out list\n\nitem 1"},
-    {
-      "attributes": {"list": "bullet"},
-      "insert":     "\n"
-    },
-    {"insert": "item 2"},
-    {
-      "attributes": {"list": "bullet"},
-      "insert":     "\n"
-    },
-    {"insert": "item 3"},
-    {
-      "attributes": {"list": "bullet"},
-      "insert":     "\n"
-    },
-    {"insert": "\nout list\n"}
-  ]
-}
+let tokens =Lexer.lex(str)
+let delta = Parser.parse(tokens)
+let html = marked(str)
 
-let b = {
-  "ops": [{"insert": "测试标题含有各种格式"}, {
-    "attributes": {"bold": true},
-    "insert":     "粗体"
-  }, {"attributes": {"italic": true}, "insert": "斜体"}, {
-    "attributes": {"link": "quilljs.com"},
-    "insert":     "链接"
-  }, {"attributes": {"header": 1}, "insert": "\n"}]
-}
+console.log(tokens.reverse())
+console.log(delta)
+console.log(html)

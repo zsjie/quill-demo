@@ -5,6 +5,8 @@ function DeltaMaker(options) {
 DeltaMaker.prototype.code = function (code, lang, escaped) {}
 
 DeltaMaker.prototype.blockquote = function (deltas) {
+  let newLine = { insert: '\n' }
+  deltas.unshift(newLine)
   return deltas
 }
 

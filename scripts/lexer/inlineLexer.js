@@ -1,5 +1,5 @@
 import defaults from '../defaults'
-import DeltaMaker from '../DeltaMaker'
+import DeltaMaker from '../DeltaMaker.js'
 import inline from '../regexp/inlineLevel'
 import { escape } from '../utils'
 

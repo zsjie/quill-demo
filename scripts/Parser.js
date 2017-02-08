@@ -1,6 +1,6 @@
-import defaults from '../defaults'
-import DeltaMaker from '../DeltaMaker'
-import InlineLexer from '../lexer/inlineLexer'
+import defaults from './defaults'
+import DeltaMaker from './DeltaMaker.js'
+import InlineLexer from './lexer/inlineLexer'
 
 /**
  * Parsing & Compiling
@@ -31,7 +31,7 @@ Parser.parse = function(src, options, deltaMaker) {
 Parser.prototype.parse = function(src) {
   this.inline = new InlineLexer(src.links, this.options, this.deltaMaker)
   this.tokens = src.reverse()
-  let debug = true
+  let debug = false
   debug && this.tokens.forEach(ele => {
     console.log(ele)
   })

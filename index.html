@@ -35,6 +35,23 @@
   <div id="editor-container">
   </div>
 
+  <div class="animation-control">
+    <button type="button" class="start">start</button>
+    <button type="button" class="reset">reset</button>
+    <label for="start-scale">
+      <input type="text" id="start-scale" value="1.2">
+    </label>
+    <label for="start-opacity">
+      <input type="text" id="start-opacity" value="0.9">
+    </label>
+    <label for="duration">
+      <input type="text" id="duration" value="0.6">
+    </label>
+  </div>
+  <div class="image-container">
+    <img src="./images/nature-q-c-640-480-5.jpg" alt="">
+  </div>
+
   <!-- Initialize Quill editor -->
   <script src="/bundle.js"></script>
 
@@ -42,10 +59,10 @@
     <div class="insert-btns">
       <a class="insert-btn-show"><i class="fa fa-plus" aria-hidden="true"></i></a>
       <ul class="insert-btn-addons insert-btn-addons-hide">
-        <li><a><i class="fa fa-image" aria-hidden="true"></i></a></li>
-        <li><a><i class="fa fa-minus" aria-hidden="true"></i></a></li>
-        <li><a><i class="fa fa-quote-left" aria-hidden="true"></i></a></li>
-        <li><a><i class="fa fa-code" aria-hidden="true"></i></a></li>
+        <li class="insert-image"><a><i class="fa fa-image" aria-hidden="true"></i></a></li>
+        <li class="insert-hr"><a><i class="fa fa-minus" aria-hidden="true"></i></a></li>
+        <li class="insert-quote"><a><i class="fa fa-quote-left" aria-hidden="true"></i></a></li>
+        <li class="insert-code"><a><i class="fa fa-code" aria-hidden="true"></i></a></li>
       </ul>
     </div>
   </template>

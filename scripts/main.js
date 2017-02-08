@@ -1,13 +1,55 @@
 import Quill from 'quill'
 import lstorage from './utils/lstorage'
 import Lexer from './lexer/blockLexer'
-import Parser from './Parser'
+import Parser from './Parser.js'
 import expandDelta from './expandDelta'
 
-let str = '++quill++'
+let str = `--`
 let tokens = Lexer.lex(str)
 let dt = Parser.parse(tokens)
-console.log(dt)
+// console.log(dt)
+
+/**
+ * customize image blot
+ */
+let BlockEmbed = Quill.import('blots/block/embed')
+class ImageBlot extends BlockEmbed {
+  static create(value) {
+    let node = super.create()
+    node.className = 'insert-images'
+    
+    let image = document.createElement('img')
+    image.setAttribute('alt', value.alt)
+    image.setAttribute('src', value.url)
+    let tmpImg = new Image()
+    tmpImg.onload = function (e) {
+      node.style.width = tmpImg.with + 'px'
+      node.style.height = tmpImg.height + 'px'
+      tmpImg = null
+    }
+    tmpImg.src = value.url
+    
+    node.appendChild(image)
+  
+    setTimeout(() => {
+      image.classList.add('in')
+    }, 30)
+    
+    return node
+  }
+  
+  static value(node) {
+    let image = node.querySelector('img')
+    
+    return {
+      alt: image.getAttribute('alt'),
+      url: image.getAttribute('src')
+    }
+  }
+}
+ImageBlot.blotName = 'image'
+ImageBlot.tagName = 'div'
+Quill.register(ImageBlot)
 
 /**
  * quill
@@ -28,6 +70,7 @@ let quill = new Quill('#editor-container', {
 })
 
 setTimeout(() => {
+  // add show btns
   let editorContainer = document.querySelector('#editor-container')
   let insertBtnsTmpl = document.querySelector('#insert-btns-tmpl')
   editorContainer.appendChild(insertBtnsTmpl.content)
@@ -38,8 +81,41 @@ setTimeout(() => {
   showBtn.addEventListener('click', (event) => {
     insertBtns.classList.toggle('active')
     showBtn.classList.toggle('insert-btn-show-rotate')
-    addons.classList.toggle('insert-btn-addons-hide')
+    addons.classList.toggle('insert-btn-addons-show')
   }, false)
+  
+  // add image input
+  let fileInput = document.createElement('input')
+  fileInput.setAttribute('type', 'file')
+  fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon, image/svg+xml')
+  fileInput.classList.add('ql-image')
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files != null && fileInput.files[0] != null) {
+      let reader = new FileReader()
+      reader.onload = (e) => {
+        let range = quill.getSelection(true);
+        quill.insertText(range.index, '\n', Quill.sources.USER);
+        quill.insertEmbed(range.index + 1, 'image', {
+          alt: 'Quill Cloud',
+          url: e.target.result
+        }, Quill.sources.USER);
+        quill.setSelection(range.index + 2, Quill.sources.SILENT);
+        // quill.updateContents(new Delta()
+        //   .retain(range.index)
+        //   .delete(range.length)
+        //   .insert({ image: e.target.result })
+        // , Quill.sources.USER)
+        fileInput.value = ""
+      }
+      reader.readAsDataURL(fileInput.files[0])
+    }
+  })
+  editorContainer.appendChild(fileInput)
+  
+  let insertImage = document.querySelector('.insert-image')
+  insertImage.addEventListener('click', () => {
+    fileInput.click()
+  })
 }, 0)
 
 
@@ -47,26 +123,27 @@ loadContent()
 
 function loadContent() {
   let content = lstorage.get('content')
-  console.log(content)
   if (content) {
-    quill.setContents(content)
+    quill.setContents(Parser.parse(Lexer.lex(content)))
   }
 }
 
 // auto save
 const Delta = Quill.import('delta')
 let change = new Delta()
+let autoSave = false
 quill.on('text-change', function(delta) {
   change = change.compose(delta)
 })
 
-setInterval(function() {
+autoSave && setInterval(function() {
   if (change.length() > 0) {
     let content = quill.getContents()
-    save(content)
+    let md = expandDelta(content)
+    save(md)
     change = new Delta()
   }
-}, 5 * 1000)
+}, 3 * 1000)
 
 function save(content) { // using localStorage
   lstorage.set('content', content)
@@ -86,6 +163,7 @@ mdBtn.addEventListener('click', () => {
   let deltas = quill.getContents()
   let md = expandDelta(deltas)
   console.log(md)
+  console.log(JSON.stringify(md))
   
   txt.innerHTML = md.replace(/\n/g, '<br>')
   
@@ -122,38 +200,63 @@ quill.on('selection-change', (range, oldRange, source) => {
       if (insertBtns.classList.contains('active')) {
         insertBtns.classList.toggle('active')
         showBtn.classList.toggle('insert-btn-show-rotate')
-        addons.classList.toggle('insert-btn-addons-hide')
+        addons.classList.toggle('insert-btn-addons-show')
       }
     } else {
       insertBtns.style.display = 'none'
-      addons.style.display = 'none'
     }
     
-  } else { // editor blur
-    // insertBtn.style.display = 'none'
   }
 })
 
 quill.on('text-change', (delta, oldDelta, source) => {
-  let insertBtn = document.querySelector('.insert-btns')
+  let insertBtns = document.querySelector('.insert-btns')
+  let addons = document.querySelector('.insert-btn-addons')
+  let showBtn = document.querySelector('.insert-btn-show')
   let range = quill.getSelection()
   
   if (range && source === 'user') {
     let index = range.index
     let preIndex = index - 1 < 0 ? 0 : index - 1
+    let nextIndex = index + 1
     let inNewline = (index === 0 && quill.getText(index, 1) === '\n') ||
-      (index > 0 && quill.getText(preIndex, 2) === '\n\n')
+                    (index > 0 && quill.getText(preIndex, 2) === '\n\n') ||
+                    (index > 0 && quill.getText(index, 2) === '\n\n')
     
     if (inNewline) {
-      let pos = quill.getBounds(index)
-      insertBtn.style.left = (pos.left - 60) + 'px'
-      insertBtn.style.top = (pos.top - 12) + 'px'
-      insertBtn.style.display = 'block'
+      let pos = (index > 0 && quill.getText(index, 1) === '\n')
+                ? quill.getBounds(nextIndex)
+                : quill.getBounds(index)
+      insertBtns.style.left = (pos.left - 60) + 'px'
+      insertBtns.style.top = (pos.top - 12) + 'px'
+      insertBtns.style.display = 'block'
+    
+      if (insertBtns.classList.contains('active')) {
+        insertBtns.classList.toggle('active')
+        showBtn.classList.toggle('insert-btn-show-rotate')
+        addons.classList.toggle('insert-btn-addons-show')
+      }
     } else {
-      insertBtn.style.display = 'none'
+      insertBtns.style.display = 'none'
     }
     
   } else {
-    insertBtn.style.display = 'none'
+    insertBtns.style.display = 'none'
   }
+})
+
+let startBtn = document.querySelector('button.start')
+let resetBtn = document.querySelector('button.reset')
+let animatedImg = document.querySelector('.image-container img')
+let scaleInput = document.querySelector('#start-scale')
+let opacityInput = document.querySelector('#start-opacity')
+let durationInput = document.querySelector('#duration')
+startBtn.addEventListener('click', () => {
+  animatedImg.style.transform = 'scale(1)'
+  animatedImg.style.opacity = '1'
+})
+resetBtn.addEventListener('click', () => {
+  animatedImg.style.transform = 'scale(' + scaleInput.value + ')'
+  animatedImg.style.opacity = opacityInput.value
+  animatedImg.style.transition = 'all ease ' + durationInput.value + 's'
 })

@@ -29,8 +29,9 @@ function list (txt, type) {
 
 function blockquote (txt) {
   let prefix = '> '
+  txt = prefixWith(prefix, txt)
   
-  return prefixWith(prefix, txt)
+  return `\n${txt}\n`
 }
 
 // inline level

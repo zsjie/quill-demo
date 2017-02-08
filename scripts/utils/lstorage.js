@@ -6,7 +6,6 @@ let lstorage = {
 
 function set(key, value) {
   key = makeKey(key)
-  value = stringify(value)
   localStorage.setItem(key, value)
 }
 
@@ -33,7 +32,7 @@ function stringify(value) {
 function parse(value) {
   if (!value) return null
   
-  return JSON.parse(value)
+  return value
 }
 
 export default lstorage

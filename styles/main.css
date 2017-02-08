@@ -86,6 +86,31 @@ body {
   top: 14px;
 }
 
+.ql-editor h2, div.editable h3 {
+  font-family: -apple-system, Helvetica Neue, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;
+  color: #464d5c;
+  font-weight: 400;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.ql-editor h1 {
+  color: #464d5c;
+}
+
+.ql-editor h2 {
+  font-size: 25px;
+  min-height: 25px;
+}
+
+.ql-editor blockquote {
+  padding: 16px 0 16px 16px;
+}
+
+input.ql-image[type='file'] {
+  display: none;
+}
+
 .modal-bg {
   position: fixed;
   overflow: hidden;
@@ -162,7 +187,6 @@ body {
   transform: rotate(0deg);
   -webkit-transition: -webkit-transform .1s;
   transition: -webkit-transform .1s;
-  transition: transform .1s;
   transition: transform .1s,-webkit-transform .1s;
 }
 .insert-btns .insert-btn-show:hover  {
@@ -175,13 +199,14 @@ body {
   border: none;
 }
 .insert-btn-addons {
+  display: none;
   margin: 0;
   padding: 0;
   list-style: none;
   float: right;
 }
-.insert-btn-addons.insert-btn-addons-hide {
-  display: none;
+.insert-btn-addons.insert-btn-addons-show {
+  display: block;
 }
 .insert-btn-addons li {
   display: inline-block;
@@ -220,4 +245,26 @@ body {
     visibility: hidden;
     opacity: 0;
   }
+}
+
+.insert-images {
+  position: relative;
+  overflow: hidden;
+}
+.image-container {
+  position: relative;
+  height: 480px;
+  width: 640px;
+  overflow: hidden;
+}
+.image-container img,
+.insert-images img{
+  transform: scale(1.3);
+  opacity: .9;
+  transition: all ease .6s;
+}
+.insert-images img.in,
+.image-container img.in {
+  transform: scale(1);
+  opacity: 1;
 }
