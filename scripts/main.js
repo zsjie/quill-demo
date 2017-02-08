@@ -260,3 +260,35 @@ resetBtn.addEventListener('click', () => {
   animatedImg.style.opacity = opacityInput.value
   animatedImg.style.transition = 'all ease ' + durationInput.value + 's'
 })
+
+let uploadBtn = document.querySelector('#upload-btn')
+uploadBtn.addEventListener('click', (e) => {
+  upload()
+})
+
+// https://github.com/coligo-io/file-uploader
+function upload () {
+  let input = document.querySelector('#upload-input')
+  
+  if (input.files != null && input.files[0] != null) {
+    let formData = new FormData()
+    let file = input.files[0]
+    
+    formData.append('upload[]', file, file.name)
+    $.ajax({
+      url: 'http://localhost:3030/upload',
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      xhrFields: {
+        withCredentials: true
+      },
+      success: function (data) {
+        console.log(data)
+      }
+    })
+  } else {
+    console.log('no file')
+  }
+}
