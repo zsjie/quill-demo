@@ -19,7 +19,6 @@ class ImageBlot extends BlockEmbed {
     node.className = 'insert-images'
     
     let imgBox = document.createElement('div')
-    // imgBox.className = 'insert-image-box'
     let image = document.createElement('img')
     image.setAttribute('alt', value.alt)
     image.setAttribute('src', value.url)
@@ -96,9 +95,11 @@ setTimeout(() => {
   fileInput.classList.add('ql-image')
   fileInput.addEventListener('change', () => {
     if (fileInput.files != null && fileInput.files[0] != null) {
+      let file = fileInput.files[0]
       let reader = new FileReader()
+      let range
       reader.onload = (e) => {
-        let range = quill.getSelection(true);
+        range = quill.getSelection(true);
         quill.insertEmbed(range.index, 'image', {
           alt: 'Quill Cloud',
           url: e.target.result
@@ -106,7 +107,33 @@ setTimeout(() => {
         quill.setSelection(range.index + 1, Quill.sources.SILENT);
         fileInput.value = ""
       }
-      reader.readAsDataURL(fileInput.files[0])
+      reader.readAsDataURL(file)
+      
+      // upload file
+      let formData = new FormData()
+      formData.append('upload[]', file, file.name)
+      $.ajax({
+        url: 'http://localhost:3030/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        xhrFields: {
+          withCredentials: true
+        },
+        success: function (data) {
+          console.log(data)
+          console.log(quill.getLeaf(range.index))
+          let insertImage = quill.getLeaf(range.index)[0].domNode
+          let imgTmp = new Image()
+          imgTmp.onload = function () {
+            let dataUrlImg = insertImage.querySelector('img')
+            // dataUrlImg.style.opacity = 0
+            dataUrlImg.setAttribute('src', data.url)
+          }
+          imgTmp.src = data.url
+        }
+      })
     }
   })
   editorContainer.appendChild(fileInput)

@@ -250,6 +250,7 @@ input.ql-image[type='file'] {
 
 .insert-images {
   position: relative;
+  overflow: hidden;
   margin: 15px 0;
 }
 .insert-images:hover {
@@ -275,7 +276,7 @@ input.ql-image[type='file'] {
   width: 100%;
   transform: scale(1.3);
   opacity: .9;
-  transition: all ease .6s;
+  transition: all ease .3s;
 }
 .insert-images img.in,
 .image-container img.in {
