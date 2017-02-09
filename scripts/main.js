@@ -18,22 +18,24 @@ class ImageBlot extends BlockEmbed {
     let node = super.create()
     node.className = 'insert-images'
     
+    let imgBox = document.createElement('div')
+    // imgBox.className = 'insert-image-box'
     let image = document.createElement('img')
     image.setAttribute('alt', value.alt)
     image.setAttribute('src', value.url)
-    let tmpImg = new Image()
-    tmpImg.onload = function (e) {
-      node.style.width = tmpImg.with + 'px'
-      node.style.height = tmpImg.height + 'px'
-      tmpImg = null
-    }
-    tmpImg.src = value.url
     
-    node.appendChild(image)
+    imgBox.appendChild(image)
+    node.appendChild(imgBox)
   
     setTimeout(() => {
       image.classList.add('in')
     }, 30)
+    
+    node.addEventListener('click', (e) => {
+      if (!node.classList.contains('insert-images-active')) {
+        node.classList.add('insert-images-active')
+      }
+    })
     
     return node
   }
@@ -69,6 +71,9 @@ let quill = new Quill('#editor-container', {
   theme: 'bubble' // or 'bubble'
 })
 
+window.Quill = Quill
+window.quill = quill
+
 setTimeout(() => {
   // add show btns
   let editorContainer = document.querySelector('#editor-container')
@@ -94,17 +99,11 @@ setTimeout(() => {
       let reader = new FileReader()
       reader.onload = (e) => {
         let range = quill.getSelection(true);
-        quill.insertText(range.index, '\n', Quill.sources.USER);
-        quill.insertEmbed(range.index + 1, 'image', {
+        quill.insertEmbed(range.index, 'image', {
           alt: 'Quill Cloud',
           url: e.target.result
         }, Quill.sources.USER);
-        quill.setSelection(range.index + 2, Quill.sources.SILENT);
-        // quill.updateContents(new Delta()
-        //   .retain(range.index)
-        //   .delete(range.length)
-        //   .insert({ image: e.target.result })
-        // , Quill.sources.USER)
+        quill.setSelection(range.index + 1, Quill.sources.SILENT);
         fileInput.value = ""
       }
       reader.readAsDataURL(fileInput.files[0])
@@ -112,8 +111,8 @@ setTimeout(() => {
   })
   editorContainer.appendChild(fileInput)
   
-  let insertImage = document.querySelector('.insert-image')
-  insertImage.addEventListener('click', () => {
+  let insertImageBtn = document.querySelector('.insert-image')
+  insertImageBtn.addEventListener('click', () => {
     fileInput.click()
   })
 }, 0)
@@ -187,9 +186,18 @@ quill.on('selection-change', (range, oldRange, source) => {
   
   if (range && source === 'user') {
     let index = range.index
+    let contents = quill.getContents(index, 2)
+    let leaf = quill.getLeaf(index)
     let preIndex = index - 1 < 0 ? 0 : index - 1
     let inNewline = (index === 0 && quill.getText(index, 1) === '\n') ||
                     (index > 0 && quill.getText(preIndex, 2) === '\n\n')
+    let nextContent = contents.ops[0]
+    let preContent = contents.ops.reverse()[0]
+    let inImage = typeof preContent.insert.image !== 'undefined' ||
+                  typeof nextContent.insert.image !== 'undefined' ||
+                  leaf[0].constructor === ImageBlot.prototype.constructor
+    
+    console.log(index, leaf[0].constructor === ImageBlot.prototype.constructor)
     
     if (inNewline) {
       let pos = quill.getBounds(index)
@@ -202,8 +210,21 @@ quill.on('selection-change', (range, oldRange, source) => {
         showBtn.classList.toggle('insert-btn-show-rotate')
         addons.classList.toggle('insert-btn-addons-show')
       }
+    } else if (inImage) {
+      let imageBlot = leaf[0].constructor === ImageBlot.prototype.constructor
+                      ? leaf[0]
+                      : quill.getLeaf(index + 1)[0]
+      let insertImage = imageBlot.domNode
+      insertImage.classList.add('insert-images-active')
     } else {
       insertBtns.style.display = 'none'
+      
+      let images = document.querySelectorAll('.insert-images')
+      if (images) {
+        for (let i = 0, l = images.length; i < l; i++) {
+          images[i].classList.remove('insert-images-active')
+        }
+      }
     }
     
   }
@@ -214,6 +235,8 @@ quill.on('text-change', (delta, oldDelta, source) => {
   let addons = document.querySelector('.insert-btn-addons')
   let showBtn = document.querySelector('.insert-btn-show')
   let range = quill.getSelection()
+  
+  console.log(quill.getContents(range.index - 5, 5))
   
   if (range && source === 'user') {
     let index = range.index

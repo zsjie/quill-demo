@@ -59,6 +59,7 @@ body {
 
 .ql-editor {
   -webkit-font-smoothing: antialiased;
+  overflow: initial;
   min-height: 38px;
   margin: 0 0 100px;
   padding: 0 0 100px;
@@ -249,7 +250,13 @@ input.ql-image[type='file'] {
 
 .insert-images {
   position: relative;
-  overflow: hidden;
+  margin: 15px 0;
+}
+.insert-images:hover {
+  outline: 2px solid rgba(58,123,247,.5);
+}
+.insert-images.insert-images-active {
+  outline: 2px solid #3a7bf7;
 }
 .image-container {
   position: relative;
@@ -257,8 +264,15 @@ input.ql-image[type='file'] {
   width: 640px;
   overflow: hidden;
 }
+.insert-image-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
 .image-container img,
 .insert-images img{
+  display: block;
+  width: 100%;
   transform: scale(1.3);
   opacity: .9;
   transition: all ease .6s;
