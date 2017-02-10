@@ -2,7 +2,24 @@ function DeltaMaker(options) {
   this.options = options || {}
 }
 
-DeltaMaker.prototype.code = function (code, lang, escaped) {}
+DeltaMaker.prototype.code = function (code, lang, escaped) {
+  let lines = code.split('\n')
+  return lines.reduce((preVal, line) => {
+    preVal.push(
+      {
+        insert: line
+      },
+      {
+        insert: '\n',
+        attributes: {
+          'code-block': true
+        }
+      }
+    )
+    
+    return preVal
+  }, [])
+}
 
 DeltaMaker.prototype.blockquote = function (deltas) {
   let newLine = { insert: '\n' }
@@ -90,7 +107,17 @@ DeltaMaker.prototype.link = function (href, title, deltas) {
   })
 }
 
-DeltaMaker.prototype.image = function (href, title, text) {}
+DeltaMaker.prototype.image = function (href, title, alt) {
+  return {
+    insert: {
+      image: {
+        url: href,
+        title: title,
+        alt: alt
+      }
+    }
+  }
+}
 
 DeltaMaker.prototype.text = function (text) {
   return { insert: text }

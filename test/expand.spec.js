@@ -18,6 +18,25 @@ describe('expandDelta', () => {
     let md = expandDelta(delta)
     expect(md).to.equal('**Open your**\n')
   })
+  
+  it('should expand image delta', () => {
+    let delta = {
+      ops: [
+        {
+          insert: {
+            image: {
+              alt: 'image',
+              url: 'http://somewhere.com/a.jpg'
+            }
+          }
+        },
+        { insert: '\n' }
+      ]
+    }
+    
+    let md = expandDelta(delta)
+    expect(md).to.equal('![image](http://somewhere.com/a.jpg)\n')
+  });
 })
 
 

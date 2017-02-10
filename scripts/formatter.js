@@ -5,11 +5,13 @@ let formats = {
   bold,
   italic,
   underline,
-  link
+  link,
+  image,
+  'code-block': fences
 }
 
-export default function formatter (txt, format, value) {
-  return formats[format](txt, value)
+export default function formatter (format, txt, value1, value2) {
+  return formats[format](txt, value1, value2)
 }
 
 // block level
@@ -34,6 +36,10 @@ function blockquote (txt) {
   return `\n${txt}\n`
 }
 
+function fences (txt) {
+  return txt
+}
+
 // inline level
 
 function bold (txt) {
@@ -50,6 +56,11 @@ function underline (txt) {
 
 function link (title, url) {
   return `[${title}](${url})`
+}
+
+function image (href, title, alt) {
+  return title ? `![${alt}](${href} "${title}")`
+               : `![${alt}](${href})`
 }
 
 // helpers

@@ -2,15 +2,16 @@ import Parser from '../scripts/Parser.js'
 import Lexer from '../scripts/lexer/blockLexer.js'
 import marked from 'marked'
 
-const str = `## 存储格式
-使用 Markdown
-> quote
-## 安全性`
+const str = `\`\`\`javascript
+function foo ()  {
+  let bar = ''
+}
+\`\`\``
 
-let tokens =Lexer.lex(str)
+let tokens = Lexer.lex(str)
 let delta = Parser.parse(tokens)
 let html = marked(str)
 
-console.log(tokens.reverse())
+console.log(JSON.stringify(tokens))
 console.log(delta)
 console.log(html)

@@ -53,21 +53,29 @@ ImageBlot.tagName = 'div'
 Quill.register(ImageBlot)
 
 /**
+ * init highlight js
+ */
+hljs.configure({   // optionally configure hljs
+  languages: ['javascript', 'java', 'python']
+});
+
+/**
  * quill
  */
 
 // init quill
 let quill = new Quill('#editor-container', {
   modules: {
+    syntax: true,
     toolbar: [
       [{ header: 1 }, { header: 2 }],
       ['bold', 'italic', 'underline'],
       [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'blockquote', 'image']
+      ['link', 'blockquote', 'image', 'code-block']
     ]
   },
   placeholder: 'Compose an epic...',
-  theme: 'bubble' // or 'bubble'
+  theme: 'snow' // or 'bubble'
 })
 
 window.Quill = Quill
@@ -157,13 +165,13 @@ function loadContent() {
 // auto save
 const Delta = Quill.import('delta')
 let change = new Delta()
-let autoSave = false
+window.autoSave = false
 quill.on('text-change', function(delta) {
   change = change.compose(delta)
 })
 
-autoSave && setInterval(function() {
-  if (change.length() > 0) {
+setInterval(function() {
+  if (change.length() > 0 && autoSave) {
     let content = quill.getContents()
     let md = expandDelta(content)
     save(md)

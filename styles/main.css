@@ -1,4 +1,6 @@
 body {
+  margin: 0;
+  padding: 0;
   min-width: 646px;
   -webkit-font-smoothing: antialiased;
   font-family: -apple-system,Helvetica Neue,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
@@ -53,8 +55,18 @@ body {
 #editor-container {
   position: relative;
   width: 646px;
-  margin: 93px auto 0;
+  margin: 113px auto 0;
+  border: none;
   /*border: 1px solid #ccc;*/
+}
+
+.ql-toolbar.ql-snow {
+  position: fixed;
+  border: none;
+  width: 100%;
+  background-color: #fff;
+  z-index: 99;
+  top: 60px;
 }
 
 .ql-editor {
@@ -110,6 +122,11 @@ body {
 
 input.ql-image[type='file'] {
   display: none;
+}
+
+pre, code {
+  font-family: "Inconsolata",monospace;
+  font-size: 18px;
 }
 
 .modal-bg {
@@ -175,7 +192,7 @@ input.ql-image[type='file'] {
   box-shadow: 0 2px 20px 0 rgba(0,0,0,.08),
   0 2px 9px 0 rgba(123,137,148,.08);
 }
-.insert-btn-show {
+a.insert-btn-show {
   display: inline-block;
   width: 44px;
   height: 44px;
@@ -222,7 +239,10 @@ input.ql-image[type='file'] {
   cursor: pointer;
   font-size: 20px;
 }
-.insert-btn-addons li:hover {
+.insert-btn-addons li a {
+  color: #ddd;
+}
+.insert-btn-addons li:hover a {
   color: #00a7e6;
 }
 
