@@ -57,7 +57,6 @@ body {
   width: 646px;
   margin: 113px auto 0;
   border: none;
-  /*border: 1px solid #ccc;*/
 }
 
 .ql-toolbar.ql-snow {
@@ -96,7 +95,7 @@ body {
   white-space: pre;
   position: absolute;
   left: 3px;
-  top: 14px;
+  top: 5px;
 }
 
 .ql-editor h2, div.editable h3 {

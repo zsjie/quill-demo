@@ -14,8 +14,6 @@ hljs.configure({   // optionally configure hljs
 /**
  * quill
  */
-
-// init quill
 Quill.register(ImageBlot)
 
 let quill = new Quill('#editor-container', {
@@ -104,6 +102,13 @@ setTimeout(() => {
   insertImageBtn.addEventListener('click', () => {
     fileInput.click()
   })
+  
+  // add code block
+  let insertCodeBtn = document.querySelector('.insert-code-block')
+  insertCodeBtn.addEventListener('click', () => {
+    let range = quill.getSelection(true)
+    quill.insertEmbed(range.index, 'code-block', '')
+  })
 }, 0)
 
 
@@ -137,11 +142,9 @@ function save(content) { // using localStorage
   lstorage.set('content', content)
 }
 
-
 /**
- * markdown
+ * view markdown
  */
-
 const modal = document.querySelector('.modal-bg')
 const mdBtn = document.querySelector('#js-md-btn')
 const mdContent = document.querySelector('.md-content')
@@ -165,9 +168,8 @@ modal.addEventListener('click', (e) => {
 }, false)
 
 /**
- * tool button
+ * custom tool button
  */
-
 quill.on('selection-change', (range, oldRange, source) => {
   let insertBtns = document.querySelector('.insert-btns')
   let showBtn = document.querySelector('.insert-btn-show')
@@ -182,11 +184,11 @@ quill.on('selection-change', (range, oldRange, source) => {
                     (index > 0 && quill.getText(preIndex, 2) === '\n\n')
     let nextContent = contents.ops[0]
     let preContent = contents.ops.reverse()[0]
-    let inImage = typeof preContent.insert.image !== 'undefined' ||
-                  typeof nextContent.insert.image !== 'undefined' ||
+    let inImage = preContent.insert.image ||
+                  nextContent.insert.image ||
                   leaf[0].constructor === ImageBlot.prototype.constructor
     
-    console.log(index, leaf[0].constructor === ImageBlot.prototype.constructor)
+    console.log(index)
     
     if (inNewline) {
       let pos = quill.getBounds(index)

@@ -4,7 +4,8 @@
   "description": "quill demo",
   "main": "index.html",
   "scripts": {
-    "test": "karma start"
+    "test": "karma start",
+    "dev": "webpack-dev-server --open --inline --port=3060"
   },
   "repository": {
     "type": "git",
