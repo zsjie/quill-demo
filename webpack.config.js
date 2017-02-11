@@ -6,5 +6,14 @@ module.exports = {
     path: './dist'
   },
   
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        loader: 'babel-loader'
+      }
+    ]
+  },
+  
   devtool: "cheap-eval-source-map"
 }

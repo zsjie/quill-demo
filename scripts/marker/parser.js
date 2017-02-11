@@ -1,5 +1,5 @@
 import defaults from './defaults'
-import DeltaMaker from './DeltaMaker.js'
+import DeltaMaker from './deltaMaker'
 import InlineLexer from './lexer/inlineLexer'
 
 /**

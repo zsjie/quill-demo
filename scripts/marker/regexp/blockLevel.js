@@ -1,4 +1,4 @@
-import { replace, merge } from '../utils'
+import { replace, merge } from '../helpers'
 
 let block = {
   newline: /^\n+/,

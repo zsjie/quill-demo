@@ -1,56 +1,8 @@
 import Quill from 'quill'
 import lstorage from './utils/lstorage'
-import Lexer from './lexer/blockLexer'
-import Parser from './Parser.js'
-import expandDelta from './expandDelta'
-
-let str = `--`
-let tokens = Lexer.lex(str)
-let dt = Parser.parse(tokens)
-// console.log(dt)
-
-/**
- * customize image blot
- */
-let BlockEmbed = Quill.import('blots/block/embed')
-class ImageBlot extends BlockEmbed {
-  static create(value) {
-    let node = super.create()
-    node.className = 'insert-images'
-    
-    let imgBox = document.createElement('div')
-    let image = document.createElement('img')
-    image.setAttribute('alt', value.alt)
-    image.setAttribute('src', value.url)
-    
-    imgBox.appendChild(image)
-    node.appendChild(imgBox)
-  
-    setTimeout(() => {
-      image.classList.add('in')
-    }, 30)
-    
-    node.addEventListener('click', (e) => {
-      if (!node.classList.contains('insert-images-active')) {
-        node.classList.add('insert-images-active')
-      }
-    })
-    
-    return node
-  }
-  
-  static value(node) {
-    let image = node.querySelector('img')
-    
-    return {
-      alt: image.getAttribute('alt'),
-      url: image.getAttribute('src')
-    }
-  }
-}
-ImageBlot.blotName = 'image'
-ImageBlot.tagName = 'div'
-Quill.register(ImageBlot)
+import ImageBlot from './blots/image'
+import marker from './marker'
+import expander from './expander'
 
 /**
  * init highlight js
@@ -64,6 +16,8 @@ hljs.configure({   // optionally configure hljs
  */
 
 // init quill
+Quill.register(ImageBlot)
+
 let quill = new Quill('#editor-container', {
   modules: {
     syntax: true,
@@ -158,7 +112,7 @@ loadContent()
 function loadContent() {
   let content = lstorage.get('content')
   if (content) {
-    quill.setContents(Parser.parse(Lexer.lex(content)))
+    quill.setContents(marker(content))
   }
 }
 
@@ -173,7 +127,7 @@ quill.on('text-change', function(delta) {
 setInterval(function() {
   if (change.length() > 0 && autoSave) {
     let content = quill.getContents()
-    let md = expandDelta(content)
+    let md = expander(content)
     save(md)
     change = new Delta()
   }
@@ -195,7 +149,7 @@ const txt = mdContent.querySelector('p')
 
 mdBtn.addEventListener('click', () => {
   let deltas = quill.getContents()
-  let md = expandDelta(deltas)
+  let md = expander(deltas)
   console.log(md)
   console.log(JSON.stringify(md))
   
@@ -271,8 +225,6 @@ quill.on('text-change', (delta, oldDelta, source) => {
   let showBtn = document.querySelector('.insert-btn-show')
   let range = quill.getSelection()
   
-  console.log(quill.getContents(range.index - 5, 5))
-  
   if (range && source === 'user') {
     let index = range.index
     let preIndex = index - 1 < 0 ? 0 : index - 1
@@ -302,51 +254,3 @@ quill.on('text-change', (delta, oldDelta, source) => {
     insertBtns.style.display = 'none'
   }
 })
-
-let startBtn = document.querySelector('button.start')
-let resetBtn = document.querySelector('button.reset')
-let animatedImg = document.querySelector('.image-container img')
-let scaleInput = document.querySelector('#start-scale')
-let opacityInput = document.querySelector('#start-opacity')
-let durationInput = document.querySelector('#duration')
-startBtn.addEventListener('click', () => {
-  animatedImg.style.transform = 'scale(1)'
-  animatedImg.style.opacity = '1'
-})
-resetBtn.addEventListener('click', () => {
-  animatedImg.style.transform = 'scale(' + scaleInput.value + ')'
-  animatedImg.style.opacity = opacityInput.value
-  animatedImg.style.transition = 'all ease ' + durationInput.value + 's'
-})
-
-let uploadBtn = document.querySelector('#upload-btn')
-uploadBtn.addEventListener('click', (e) => {
-  upload()
-})
-
-// https://github.com/coligo-io/file-uploader
-function upload () {
-  let input = document.querySelector('#upload-input')
-  
-  if (input.files != null && input.files[0] != null) {
-    let formData = new FormData()
-    let file = input.files[0]
-    
-    formData.append('upload[]', file, file.name)
-    $.ajax({
-      url: 'http://localhost:3030/upload',
-      type: 'POST',
-      data: formData,
-      processData: false,
-      contentType: false,
-      xhrFields: {
-        withCredentials: true
-      },
-      success: function (data) {
-        console.log(data)
-      }
-    })
-  } else {
-    console.log('no file')
-  }
-}

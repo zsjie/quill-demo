@@ -9,7 +9,6 @@ export default function (delta) {
   ops.forEach((op, index) => {
     let txt = op.insert
     let attributes = op.attributes || {}
-    let inCodeBlock = false
     
     if (typeof txt === 'string' && txt !== '\n') {
       let lastNCIndex = txt.lastIndexOf('\n')
@@ -36,18 +35,16 @@ export default function (delta) {
       txt = formatter('image', txt.image.url, txt.image.title, txt.image.alt)
       newLine += txt
     } else if (txt === '\n') {
-      console.log('line ends')
       Object.keys(attributes).forEach(name => {
         newLine = formatter(name, newLine, attributes[name])
       })
       let nextTwoOp = peek(ops, index, 2)
-      let codeBlockEnd = inCodeBlock && typeof nextTwoOp === 'undefined'
-                         // (typeof nextTwoOp === 'undefined' ||
-                         // (nextTwoOp && !nextTwoOp.attributes) ||
-                         // (nextTwoOp && nextTwoOp.attributes && !nextTwoOp.attributes['code-block']))
+      let codeBlockEnd = inCodeBlock &&
+        (!nextTwoOp ||
+        (nextTwoOp && !nextTwoOp.attributes) ||
+        (nextTwoOp && nextTwoOp.attributes && !nextTwoOp.attributes['code-block']))
       if (codeBlockEnd) {
-        txt += '```'
-        console.log('code block end')
+        txt += '```\n'
         inCodeBlock = false
       }
       out += (newLine + txt)

@@ -1,7 +1,7 @@
 import defaults from '../defaults'
-import DeltaMaker from '../DeltaMaker.js'
+import DeltaMaker from '../deltaMaker'
 import inline from '../regexp/inlineLevel'
-import { escape } from '../utils'
+import { escape } from '../helpers'
 
 /**
  * Inline Lexer & Compiler
