@@ -98,6 +98,11 @@ body {
   top: 5px;
 }
 
+/*.ql-bubble .ql-tooltip:not(.ql-flip) .ql-tooltip-arrow {*/
+  /*top: 40px;*/
+  /*transform: rotate(180deg);*/
+/*}*/
+
 .ql-editor h2, div.editable h3 {
   font-family: -apple-system, Helvetica Neue, Arial, PingFang SC, Hiragino Sans GB, Microsoft YaHei, WenQuanYi Micro Hei, sans-serif;
   color: #464d5c;
@@ -117,6 +122,26 @@ body {
 
 .ql-editor blockquote {
   padding: 16px 0 16px 16px;
+}
+
+.ql-bubble .ql-editor a {
+  text-decoration: none;
+  color: #00a7e6;
+}
+
+.ql-editor ul li {
+  padding-left: 10px;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  min-height: 30px;
+}
+
+.ql-editor ul {
+  padding-left: 25px;
+  font-size: 16px;
+  font-weight: 200;
+  color: #6d7075;
+  font-family: -apple-system,Helvetica Neue,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
 }
 
 input.ql-image[type='file'] {
@@ -178,6 +203,16 @@ pre, code {
   color: #6d7075;
 }
 
+.md-content textarea {
+  width: 100%;
+  overflow: hidden;
+  resize: none;
+  border: none;
+  outline: none;
+  background-color: #fff;
+  font-size: 18px;
+}
+
 .insert-btns {
   display: none;
   position: absolute;
@@ -188,8 +223,8 @@ pre, code {
 }
 .insert-btns.active {
   border-radius: 2px;
-  box-shadow: 0 2px 20px 0 rgba(0,0,0,.08),
-  0 2px 9px 0 rgba(123,137,148,.08);
+  box-shadow: 0 2px 20px 0 rgba(0, 0, 0, .08),
+  0 2px 9px 0 rgba(123, 137, 148, .08);
 }
 a.insert-btn-show {
   display: inline-block;

@@ -20,14 +20,11 @@ let quill = new Quill('#editor-container', {
   modules: {
     syntax: true,
     toolbar: [
-      [{ header: 1 }, { header: 2 }],
-      ['bold', 'italic', 'underline'],
-      [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'blockquote', 'image', 'code-block']
+      [{ header: 1 }, { header: 2 }, 'bold', 'italic', 'underline', { list: 'ordered' }, { list: 'bullet' }, 'link']
     ]
   },
   placeholder: 'Compose an epic...',
-  theme: 'snow' // or 'bubble'
+  theme: 'bubble' // or 'snow'
 })
 
 window.Quill = Quill
@@ -109,6 +106,13 @@ setTimeout(() => {
     let range = quill.getSelection(true)
     quill.insertEmbed(range.index, 'code-block', '')
   })
+  
+  // add blockquote
+  let insertQuoteBtn = document.querySelector('.insert-quote')
+  insertQuoteBtn.addEventListener('click', () => {
+    let range = quill.getSelection(true)
+    quill.insertEmbed(range.index, 'blockquote', '')
+  })
 }, 0)
 
 
@@ -124,7 +128,7 @@ function loadContent() {
 // auto save
 const Delta = Quill.import('delta')
 let change = new Delta()
-window.autoSave = false
+window.autoSave = true
 quill.on('text-change', function(delta) {
   change = change.compose(delta)
 })
@@ -148,7 +152,7 @@ function save(content) { // using localStorage
 const modal = document.querySelector('.modal-bg')
 const mdBtn = document.querySelector('#js-md-btn')
 const mdContent = document.querySelector('.md-content')
-const txt = mdContent.querySelector('p')
+const txt = mdContent.querySelector('textarea')
 
 mdBtn.addEventListener('click', () => {
   let deltas = quill.getContents()
@@ -156,7 +160,11 @@ mdBtn.addEventListener('click', () => {
   console.log(md)
   console.log(JSON.stringify(md))
   
-  txt.innerHTML = md.replace(/\n/g, '<br>')
+  txt.innerHTML = md
+  setTimeout(() => {
+    txt.style.height = 'auto'
+    txt.style.height = txt.scrollHeight + 'px'
+  }, 0)
   
   modal.setAttribute('data-state', 'show')
 }, false)
