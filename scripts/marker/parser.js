@@ -40,6 +40,7 @@ Parser.prototype.parse = function(src) {
   while (this.next()) {
     out = out.concat(this.tok())
   }
+  out.push({ insert: '\n' })
   
   return out
 }

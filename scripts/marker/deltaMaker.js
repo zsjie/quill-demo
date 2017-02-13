@@ -4,7 +4,7 @@ function DeltaMaker(options) {
 
 DeltaMaker.prototype.code = function (code, lang, escaped) {
   let lines = code.split('\n')
-  return lines.reduce((preVal, line) => {
+  let deltas = lines.reduce((preVal, line) => {
     preVal.push(
       {
         insert: line
@@ -19,11 +19,12 @@ DeltaMaker.prototype.code = function (code, lang, escaped) {
     
     return preVal
   }, [])
+  deltas.unshift({ insert: '\n' })
+  
+  return deltas
 }
 
 DeltaMaker.prototype.blockquote = function (deltas) {
-  let newLine = { insert: '\n' }
-  deltas.unshift(newLine)
   return deltas
 }
 
@@ -108,15 +109,18 @@ DeltaMaker.prototype.link = function (href, title, deltas) {
 }
 
 DeltaMaker.prototype.image = function (href, title, alt) {
-  return {
-    insert: {
-      image: {
-        url: href,
-        title: title,
-        alt: alt
+  return [
+    {
+      insert: {
+        image: {
+          url: href,
+          title: title,
+          alt: alt
+        }
       }
-    }
-  }
+    },
+    { insert: '\n' }
+  ]
 }
 
 DeltaMaker.prototype.text = function (text) {

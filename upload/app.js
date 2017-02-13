@@ -8,7 +8,7 @@ var cors = require('cors')
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'uploads')));
 app.use(cors({
-  origin: 'http://localhost:8080',
+  origin: 'http://localhost:3060',
   credentials: true
 }))
 

@@ -19,7 +19,7 @@ export default function (delta) {
         
         let nextOp = peek(ops, index)
         if (nextOp && nextOp.attributes && nextOp.attributes['code-block']) {
-          newLine = '```\n'
+          newLine = '\n```\n'
           inCodeBlock = true
         } else {
           newLine = ''

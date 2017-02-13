@@ -118,10 +118,21 @@ body {
 .ql-editor h2 {
   font-size: 25px;
   min-height: 25px;
+  margin: 30px 0;
 }
 
-.ql-editor blockquote {
-  padding: 16px 0 16px 16px;
+.ql-bubble .ql-editor blockquote {
+  line-height: 30px;
+  min-height: 26px;
+  font-size: 16px;
+  font-weight: 200;
+  display: block;
+  margin-top: .5em;
+  margin-bottom: 0;
+  margin-left: 0;
+  padding: .5em 20px;
+  color: #989899;
+  border-left: 5px solid #eee;
 }
 
 .ql-bubble .ql-editor a {
@@ -129,19 +140,36 @@ body {
   color: #00a7e6;
 }
 
+.ql-editor ol li,
 .ql-editor ul li {
   padding-left: 10px;
   margin-top: 5px;
   margin-bottom: 5px;
   min-height: 30px;
 }
-
+.ql-editor ol li {
+  list-style-type: decimal;
+}
+.ql-editor ul li {
+  list-style-type: disc;
+}
+.ql-editor ol li:before,
+.ql-editor ul li:before {
+  display: none;
+}
+.ql-editor ol,
 .ql-editor ul {
   padding-left: 25px;
   font-size: 16px;
   font-weight: 200;
   color: #6d7075;
+  text-align: justify;
   font-family: -apple-system,Helvetica Neue,Arial,PingFang SC,Hiragino Sans GB,Microsoft YaHei,WenQuanYi Micro Hei,sans-serif;
+}
+
+.ql-bubble .ql-editor pre.ql-syntax {
+  background-color: #f8f8f8;
+  color: #333;
 }
 
 input.ql-image[type='file'] {

@@ -27,8 +27,11 @@ let quill = new Quill('#editor-container', {
   theme: 'bubble' // or 'snow'
 })
 
+// for debug
 window.Quill = Quill
 window.quill = quill
+window.expander = expander
+window.markder = marker
 
 setTimeout(() => {
   // add show btns
@@ -121,7 +124,9 @@ loadContent()
 function loadContent() {
   let content = lstorage.get('content')
   if (content) {
-    quill.setContents(marker(content))
+    let deltas = marker(content)
+    quill.setContents(deltas)
+    console.log(JSON.stringify(deltas))
   }
 }
 
