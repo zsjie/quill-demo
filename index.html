@@ -8,8 +8,8 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/styles/github.min.css">
   <link href="//cdnjs.cloudflare.com/ajax/libs/KaTeX/0.6.0/katex.min.css" rel="stylesheet">
-  <link href="//cdn.quilljs.com/1.2.0/quill.bubble.css" rel="stylesheet">
-  <!--<link href="//cdn.quilljs.com/1.2.0/quill.snow.css" rel="stylesheet">-->
+  <!--<link href="//cdn.quilljs.com/1.2.0/quill.bubble.css" rel="stylesheet">-->
+  <link href="//cdn.quilljs.com/1.2.0/quill.snow.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles/codemirror.css">
   <link href="/styles/main.css" rel="stylesheet">
 
@@ -19,41 +19,14 @@
 </head>
 
 <body>
-  <header class="navbar clearfix">
-    <div class="container clearfix">
-      <div class="bar-item">
-        <input type="button" id="js-md-btn" value="view markdown">
-      </div>
-    </div>
-  </header>
-
-  <!-- modal -->
-  <div class="modal-bg" data-state="hide">
-    <div class="modal-bg-blur dark">
-      <div class="md-content container">
-        <textarea id="md" disabled></textarea>
-      </div>
-    </div>
-  </div>
-
+  <hr/>
   <!-- Create the editor container -->
   <div id="editor-container">
   </div>
 
+  <script src="./scripts/quill.js"></script>
   <!-- Initialize Quill editor -->
   <script src="/bundle.js"></script>
-
-  <template id="insert-btns-tmpl">
-    <div class="insert-btns">
-      <a class="insert-btn-show"><i class="fa fa-plus" aria-hidden="true"></i></a>
-      <ul class="insert-btn-addons insert-btn-addons-hide">
-        <li class="insert-image"><a><i class="fa fa-image" aria-hidden="true"></i></a></li>
-        <!--<li class="insert-hr"><a><i class="fa fa-minus" aria-hidden="true"></i></a></li>-->
-        <li class="insert-quote"><a><i class="fa fa-quote-left" aria-hidden="true"></i></a></li>
-        <li class="insert-code-block"><a><i class="fa fa-code" aria-hidden="true"></i></a></li>
-      </ul>
-    </div>
-  </template>
 
 </body>
 
