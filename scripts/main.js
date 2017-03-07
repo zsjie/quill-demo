@@ -14,7 +14,7 @@ hljs.configure({   // optionally configure hljs
  * quill
  */
 
-let quill = new Quill('#editor-container', {
+let quill = new Quill('#quill-editor', {
   modules: {
     syntax: true,
     toolbar: [
@@ -25,9 +25,46 @@ let quill = new Quill('#editor-container', {
       ['blockquote', 'code-block']
     ]
   },
-  placeholder: 'Compose an epic...',
+  placeholder: '',
   theme: 'snow' // or 'bubble'
 })
+
+setTimeout(function () {
+  // add markdown button
+  let toolbar = document.querySelector('.ql-toolbar')
+  let btn = document.createElement('a')
+  btn.setAttribute('title', 'Toggle Markdown Mode')
+  btn.innerHTML = 'Markdown'
+  btn.className = 'toggle-markdown'
+  btn.addEventListener('click', toggleMarkdown)
+  toolbar.appendChild(btn)
+}, 0)
+
+let inMdMode = false
+function toggleMarkdown () {
+  let qEditor = document.querySelector('#quill-editor')
+  let aEditor = document.querySelector('#ace-editor')
+  let qlFormats = document.querySelectorAll('.ql-formats')
+  let deltas = quill.getContents()
+  let md = expander(deltas)
+  
+  if (inMdMode) {
+    for (let i = 0; i < qlFormats.length; i++) {
+      qlFormats[i].classList.remove('ql-formats-hide')
+    }
+    
+    aEditor.classList.remove('ace-editor-show')
+  } else {
+    for (let i = 0; i < qlFormats.length; i++) {
+      qlFormats[i].classList.add('ql-formats-hide')
+    }
+    
+    aceEditor.session.setValue(md)
+    aEditor.classList.add('ace-editor-show')
+  }
+  
+  inMdMode = !inMdMode
+}
 
 // for debug
 window.expander = expander

@@ -13,20 +13,43 @@
   <link rel="stylesheet" href="/styles/codemirror.css">
   <link href="/styles/main.css" rel="stylesheet">
 
-  <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-  <script src="/scripts/codemirror.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
   <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.9.0/highlight.min.js"></script>
 </head>
-
 <body>
-  <hr/>
-  <!-- Create the editor container -->
-  <div id="editor-container">
+
+  <div class="editor-container">
+
+    <div id="quill-editor"></div>
+
+    <div id="ace-editor"></div>
+
   </div>
 
   <script src="./scripts/quill.js"></script>
   <!-- Initialize Quill editor -->
   <script src="/bundle.js"></script>
+  <script>
+    let aceEditor
+    initAceEditor()
+    function initAceEditor () {
+      aceEditor = ace.edit("ace-editor");
+      aceEditor.setOptions({
+        highlightActiveLine: false,
+        wrapBehavioursEnabled: true
+      })
+      aceEditor.renderer.setOptions({
+        showLineNumbers: false,
+        showGutter: false,
+        showPrintMargin: false
+      });
+      aceEditor.session.setOptions({
+        wrap: true
+      })
+      aceEditor.setTheme("ace/theme/textmate");
+      aceEditor.getSession().setMode("ace/mode/markdown");
+    }
+  </script>
 
 </body>
 
