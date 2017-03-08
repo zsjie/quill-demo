@@ -2,6 +2,15 @@ function DeltaMaker(options) {
   this.options = options || {}
 }
 
+DeltaMaker.prototype.newline = function (lines) {
+  let insert = ''
+  for (let i = 0; i < lines; i++) {
+    insert += '\n'
+  }
+  
+  return [{ insert }]
+}
+
 DeltaMaker.prototype.code = function (code, lang, escaped) {
   let lines = code.split('\n')
   let deltas = lines.reduce((preVal, line) => {

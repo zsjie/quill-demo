@@ -6,5 +6,6 @@ window.Parser = Parser
 
 export default function (str) {
   let tokens = Lexer.lex(str)
-  return Parser.parse(tokens)
+  console.log(JSON.stringify(tokens))
+  return { ops: Parser.parse(tokens) }
 }

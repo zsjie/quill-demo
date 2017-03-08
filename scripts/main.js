@@ -45,21 +45,27 @@ function toggleMarkdown () {
   let qEditor = document.querySelector('#quill-editor')
   let aEditor = document.querySelector('#ace-editor')
   let qlFormats = document.querySelectorAll('.ql-formats')
-  let deltas = quill.getContents()
-  let md = expander(deltas)
+  let md, deltas
   
   if (inMdMode) {
     for (let i = 0; i < qlFormats.length; i++) {
       qlFormats[i].classList.remove('ql-formats-hide')
     }
     
+    md = aceEditor.session.getValue()
+    deltas = marker(md)
+    console.log(deltas)
+    quill.setContents(deltas)
     aEditor.classList.remove('ace-editor-show')
   } else {
     for (let i = 0; i < qlFormats.length; i++) {
       qlFormats[i].classList.add('ql-formats-hide')
     }
-    
+  
+    deltas = quill.getContents()
+    md = expander(deltas)
     aceEditor.session.setValue(md)
+    
     aEditor.classList.add('ace-editor-show')
   }
   
@@ -67,6 +73,7 @@ function toggleMarkdown () {
 }
 
 // for debug
+window.quill = quill
 window.expander = expander
 window.markder = marker
 

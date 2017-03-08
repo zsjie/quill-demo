@@ -84,6 +84,9 @@ Parser.prototype.tok = function() {
     case 'space': {
       return [{ insert: '' }]
     }
+    case 'newline': {
+      return this.deltaMaker.newline(this.token.lines)
+    }
     case 'hr': {
       return this.deltaMaker.hr()
     }

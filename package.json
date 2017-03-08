@@ -23,7 +23,8 @@
   "homepage": "https://github.com/zsjie/quill-demo#readme",
   "dependencies": {
     "marked": "^0.3.6",
-    "quill": "^1.2.0"
+    "quill": "^1.2.0",
+    "quill-delta": "^3.4.3"
   },
   "devDependencies": {
     "babel": "^6.5.2",

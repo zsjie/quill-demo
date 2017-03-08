@@ -68,10 +68,12 @@ Lexer.prototype.token = function(src, top, bq) {
   while (src) {
     // newline
     if (cap = this.rules.newline.exec(src)) {
+      console.log(cap[0].length)
       src = src.substring(cap[0].length)
-      if (cap[0].length > 1) {
+      if (cap[0].length > 0) {
         this.tokens.push({
-          type: 'space'
+          type: 'newline',
+          lines: cap[0].length
         })
       }
     }
