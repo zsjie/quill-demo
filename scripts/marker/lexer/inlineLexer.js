@@ -145,6 +145,14 @@ InlineLexer.prototype.output = function(src) {
       continue
     }
     
+    // strike
+    if (cap = this.rules.strike.exec(src)) {
+      src = src.substring(cap[0].length)
+      delta = this.deltaMaker.strike(this.output(cap[2] || cap[1]))
+      out = out.concat(delta)
+      continue
+    }
+    
     // em
     if (cap = this.rules.em.exec(src)) {
       src = src.substring(cap[0].length)

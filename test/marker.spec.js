@@ -5,14 +5,15 @@ import marker from '../scripts/marker'
 const expect = chai.expect
 
 describe('marker', () => {
-  it('should recognize multi empty lines', () => {
-    let deltas = new Delta().insert('title')
-      .insert('\n', { header: 1 })
-      .insert('\n\n')
-      .insert('sometext')
-    let md = '# title\n\nsometext'
-    console.log(JSON.stringify(marker(md)))
-    console.log(JSON.stringify(deltas))
-    expect(marker(md)).to.equal(deltas)
+  it('should recognize empty lines after header', () => {
+    let deltas = {"ops":[{"insert":"title"},{"insert":"\n","attributes":{"header":1}},{"insert":"\n\n"},{"insert":"sometext"},{"insert":"\n"}]}
+    let md = '# title\n\n\nsometext'
+    expect(JSON.stringify(marker(md))).to.equal(JSON.stringify(deltas))
+  })
+  
+  it('should recognize empty lines after paragraph', () => {
+    let deltas = {"ops":[{"insert":"foo"},{"insert":"\n"},{"insert":"\n\n"},{"insert":"bar"},{"insert":"\n"}]}
+    let md = 'foo\n\n\nbar'
+    expect(JSON.stringify(marker(md))).to.equal(JSON.stringify(deltas))
   })
 })

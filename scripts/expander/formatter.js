@@ -3,6 +3,7 @@ let formats = {
   list,
   blockquote,
   bold,
+  strike,
   italic,
   underline,
   link,
@@ -41,6 +42,10 @@ function fences (txt) {
 
 function bold (txt) {
   return `**${txt}**`
+}
+
+function strike (txt) {
+  return `~~${txt}~~`
 }
 
 function italic (txt) {

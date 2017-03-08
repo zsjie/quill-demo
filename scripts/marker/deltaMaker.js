@@ -61,6 +61,10 @@ DeltaMaker.prototype.listitem = function (deltas) {
 }
 
 DeltaMaker.prototype.paragraph = function (deltas) {
+  deltas.push({
+    insert: '\n'
+  })
+  
   return deltas
 }
 
@@ -75,6 +79,15 @@ DeltaMaker.prototype.strong = function (deltas) {
   return deltas.map((delta) => {
     delta.attributes = delta.attributes || {}
     delta.attributes.bold = true
+    
+    return delta
+  })
+}
+
+DeltaMaker.prototype.strike = function (deltas) {
+  return deltas.map((delta) => {
+    delta.attributes = delta.attributes || {}
+    delta.attributes.strike = true
     
     return delta
   })
