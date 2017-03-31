@@ -5,7 +5,8 @@
   "main": "index.html",
   "scripts": {
     "test": "karma start",
-    "dev": "webpack-dev-server --open --inline --port=3060"
+    "test:expander": "mocha --compilers js:babel-core/register ./test/expander.spec.js",
+    "dev": "webpack-dev-server --inline --host=0.0.0.0 --port=3060"
   },
   "repository": {
     "type": "git",
@@ -46,6 +47,7 @@
     "karma-webpack": "^2.0.2",
     "load-grunt-tasks": "^3.5.2",
     "mocha": "^3.2.0",
+    "quill-delta": "^3.5.0",
     "serve-static": "^1.11.1",
     "webpack": "^2.2.0",
     "webpack-dev-server": "^1.16.2"

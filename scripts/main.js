@@ -1,7 +1,10 @@
 // import Quill from 'quill'
 import lstorage from './utils/lstorage'
+import articleSample from './data/article-sample'
 import marker from './marker'
 import expander from './expander'
+
+const Delta = Quill.import('delta')
 
 /**
  * init highlight js
@@ -21,8 +24,7 @@ let quill = new Quill('#quill-editor', {
       [{ header: 1 }, { header: 2 }],
       ['bold', 'italic', 'underline', 'strike'],
       [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'image'],
-      ['blockquote', 'code-block']
+      ['link', 'blockquote', 'code-block']
     ]
   },
   placeholder: '',
@@ -42,7 +44,7 @@ setTimeout(function () {
 
 let inMdMode = false
 function toggleMarkdown () {
-  let qEditor = document.querySelector('#quill-editor')
+  let qEditor = document.querySelector('.ql-editor')
   let aEditor = document.querySelector('#ace-editor')
   let qlFormats = document.querySelectorAll('.ql-formats')
   let md, deltas
@@ -56,6 +58,7 @@ function toggleMarkdown () {
     deltas = marker(md)
     console.log(deltas)
     quill.setContents(deltas)
+    qEditor.classList.remove('ql-editor-hide')
     aEditor.classList.remove('ace-editor-show')
   } else {
     for (let i = 0; i < qlFormats.length; i++) {
@@ -65,7 +68,8 @@ function toggleMarkdown () {
     deltas = quill.getContents()
     md = expander(deltas)
     aceEditor.session.setValue(md)
-    
+  
+    qEditor.classList.add('ql-editor-hide')
     aEditor.classList.add('ace-editor-show')
   }
   
@@ -81,28 +85,43 @@ loadContent()
 
 function loadContent() {
   let content = lstorage.get('content')
+  let deltas
   if (content) {
-    let deltas = marker(content)
+    deltas = new Delta()
+      .insert('foo')
+      .insert('\n', { list: 'bullet' })
+      .insert('bar')
+      .insert('\n', { list: 'bullet' })
+    console.log(deltas)
+    quill.setContents(deltas)
+  } else {
+    deltas = marker(articleSample)
     quill.setContents(deltas)
   }
 }
 
 // auto save
-const Delta = Quill.import('delta')
 let change = new Delta()
-window.autoSave = false
+window.autoSave = true
 quill.on('text-change', function(delta) {
   change = change.compose(delta)
 })
 
 setInterval(function() {
-  if (change.length() > 0 && autoSave) {
-    let content = quill.getContents()
-    let md = expander(content)
-    save(md)
-    change = new Delta()
+  if (inMdMode) {
+    if (autoSave) {
+      let md = aceEditor.getValue()
+      save(md)
+    }
+  } else {
+    if (change.length() > 0 && autoSave) {
+      let content = quill.getContents()
+      let md = expander(content)
+      save(md)
+      change = new Delta()
+    }
   }
-}, 3 * 1000)
+}, 2 * 1000)
 
 function save(content) { // using localStorage
   lstorage.set('content', content)

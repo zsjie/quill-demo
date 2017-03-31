@@ -68,7 +68,6 @@ Lexer.prototype.token = function(src, top, bq) {
   while (src) {
     // newline
     if (cap = this.rules.newline.exec(src)) {
-      console.log(cap[0].length)
       src = src.substring(cap[0].length)
       if (cap[0].length > 0) {
         this.tokens.push({
@@ -179,6 +178,10 @@ Lexer.prototype.token = function(src, top, bq) {
       // "toplevel" state. This is exactly
       // how markdown.pl works.
       this.token(cap, top, true);
+  
+      if(this.tokens[this.tokens.length - 1].type === 'newline') {
+        this.tokens.pop()
+      }
       
       this.tokens.push({
         type: 'blockquote_end'
@@ -248,6 +251,10 @@ Lexer.prototype.token = function(src, top, bq) {
         
         // Recurse.
         this.token(item, false, bq);
+  
+        if(this.tokens[this.tokens.length - 1].type === 'newline') {
+          this.tokens.pop()
+        }
         
         this.tokens.push({
           type: 'list_item_end'

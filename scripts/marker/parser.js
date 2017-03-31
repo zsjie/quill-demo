@@ -140,17 +140,21 @@ Parser.prototype.tok = function() {
       while (this.next().type !== 'blockquote_end') {
         deltas = deltas.concat(this.tok())
       }
+      if (/\n+/.test(deltas[deltas.length - 1].insert)) {
+        deltas.pop()
+      }
       deltas.push({
         insert: '\n',
         attributes: {
           blockquote: true
         }
       })
+      // deltas.push({ insert: '\n' })
       
       return this.deltaMaker.blockquote(deltas)
     }
     case 'list_start': {
-      let deltas = [{ insert: '\n' }]
+      let deltas = []
       let type = this.token.ordered ? 'ordered' : 'bullet'
       
       while (this.next().type !== 'list_end') {

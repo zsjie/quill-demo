@@ -24,10 +24,10 @@ function header (txt, level) {
   return prefixWith(prefix, txt)
 }
 
-function list (txt, type) {
-  let prefix = type === 'ordered' ? '1. ' : '- '
+function list (txt, type, listIndex) {
+  let prefix = type === 'ordered' ? listIndex + '.' : '-'
   
-  return prefixWith(prefix, txt)
+  return `${prefix} ${txt}\n`
 }
 
 function blockquote (txt) {

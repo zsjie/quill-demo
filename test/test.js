@@ -1,5 +1,5 @@
-const reg = /^ *(#{1,6}) *([^\n]+?) *#* *(?:\n|$)/
-let md = '# title\n\nsometext'
-console.log(reg.exec(md)[0].replace(/\n/g, '\\n'))
+const list1 = /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/
+const list2 = /^( *)(bull) [\s\S]+?(?:hr|def|\n{2,}(?! )(?!\1bull )\n*|\s*$)/
 
-console.log('afaf')
+const item1 = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/
+const item2 = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/

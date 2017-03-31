@@ -12,7 +12,8 @@ body {
   height: 618px;
 }
 
-.ql-snow .ql-formats-hide {
+.ql-snow .ql-formats-hide,
+.ql-editor-hide {
   display: none;
 }
 .ql-formats-show {
