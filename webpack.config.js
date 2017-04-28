@@ -1,9 +1,11 @@
+const path = require('path')
+
 module.exports = {
   entry: './scripts/main.js',
   
   output: {
     filename: 'bundle.js',
-    path: './dist'
+    path: path.resolve('./dist')
   },
   
   module: {

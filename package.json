@@ -6,7 +6,8 @@
   "scripts": {
     "test": "karma start",
     "test:expander": "mocha --compilers js:babel-core/register ./test/expander.spec.js",
-    "dev": "webpack-dev-server --inline --host=0.0.0.0 --port=3060"
+    "dev": "webpack-dev-server --inline --host=0.0.0.0 --port=3060",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
