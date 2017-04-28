@@ -92,7 +92,6 @@ function loadContent() {
       .insert('\n', { list: 'bullet' })
       .insert('bar')
       .insert('\n', { list: 'bullet' })
-    console.log(deltas)
     quill.setContents(deltas)
   } else {
     deltas = marker(articleSample)
