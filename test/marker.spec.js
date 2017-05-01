@@ -4,7 +4,11 @@ import marker from '../scripts/marker'
 
 describe('marker', () => {
   it('should recognize empty lines between paragraphs', () => {
-    let md = 'p\n\n\np'
-    expect(marker(md)).to.equal(new Delta().insert('p1\n\n\np2'))
+    let md = 'p\n\n\np\n'
+    expect(getInsert(marker(md))).to.equal(getInsert(new Delta().insert(md)))
   })
 })
+
+function getInsert (delta) {
+  return delta.ops[0].insert
+}

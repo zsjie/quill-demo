@@ -81,6 +81,10 @@ window.quill = quill
 window.expander = expander
 window.markder = marker
 
+console.log(JSON.stringify(
+  marker.Parser.parse(marker.Lexer.lex('p\n\n\np\n'))
+))
+
 loadContent()
 
 function loadContent() {

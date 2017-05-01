@@ -6,7 +6,12 @@ if (typeof window !== 'undefined') {
   window.Parser = Parser
 }
 
-export default function (str) {
+function marker (str) {
   let tokens = Lexer.lex(str)
   return { ops: Parser.parse(tokens) }
 }
+
+marker.Lexer = Lexer
+marker.Parser = Parser
+
+export default marker

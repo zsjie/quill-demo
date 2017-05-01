@@ -196,7 +196,26 @@ Parser.prototype.tok = function() {
       return this.deltaMaker.html(html)
     }
     case 'paragraph': {
-      let deltas = this.inline.output(this.token.text)
+      let text = this.token.text + '\n'
+      
+      while (this.peek().type === 'newline' ||
+             this.peek().type === 'paragraph'
+      ) {
+        let next = this.next()
+        
+        if (next.type === 'newline') {
+          for (let i = 0; i < next.lines; i++) {
+            text += '\n'
+          }
+        }
+        
+        if (next.type === 'paragraph') {
+          text += (next.text + '\n')
+        }
+      }
+  
+      let deltas = this.inline.output(text)
+  
       return this.deltaMaker.paragraph(deltas)
     }
     case 'text': {

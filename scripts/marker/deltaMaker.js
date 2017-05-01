@@ -61,10 +61,6 @@ DeltaMaker.prototype.listitem = function (deltas) {
 }
 
 DeltaMaker.prototype.paragraph = function (deltas) {
-  deltas.push({
-    insert: '\n'
-  })
-  
   return deltas
 }
 

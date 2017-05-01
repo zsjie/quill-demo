@@ -5,9 +5,6 @@ import chai from 'chai'
 const expect = chai.expect
 
 describe('expander', () => {
-  before(() => {
-  
-  })
   it('should expand list delta', () => {
     expect(expander(new Delta()
       .insert('foo')
