@@ -30,6 +30,34 @@ describe('marker', () => {
       )
     )
   })
+  
+  it('should recognize empty lines in blockquote', () => {
+    let md = '> p\n\n\n> p\n'
+    expect(stringify(marker(md))).to.equal(
+      stringify(
+        new Delta()
+          .insert('p')
+          .insert('\n\n\n', { blockquote: true })
+          .insert('p')
+          .insert('\n', { blockquote: true })
+      )
+    )
+  })
+  
+  it('should recognize paragraph line break in blockquote', () => {
+    let md = '> p\np\n\n> p\n'
+    expect(stringify(marker(md))).to.equal(
+      stringify(
+        new Delta()
+          .insert('p')
+          .insert('\n', { blockquote: true })
+          .insert('p')
+          .insert('\n\n', { blockquote: true })
+          .insert('p')
+          .insert('\n', { blockquote: true })
+      )
+    )
+  })
 })
 
 function stringify (obj) {

@@ -137,7 +137,7 @@ DeltaMaker.prototype.image = function (href, title, alt) {
 }
 
 DeltaMaker.prototype.text = function (text) {
-  return { insert: text }
+  return [{ insert: text }]
 }
 
 DeltaMaker.prototype.escape = function (text) {

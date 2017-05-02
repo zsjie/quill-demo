@@ -14,6 +14,7 @@ function Parser(options) {
   this.options.deltaMaker = this.options.deltaMaker || new DeltaMaker
   this.deltaMaker = this.options.deltaMaker
   this.deltaMaker.options = this.options
+  this.inBlockquote = false
 }
 
 /**
@@ -76,8 +77,6 @@ Parser.prototype.parseText = function() {
  */
 
 Parser.prototype.tok = function() {
-  let inBockquote = false
-  
   switch (this.token.type) {
     case 'space': {
       return [{ insert: '' }]
@@ -152,11 +151,11 @@ Parser.prototype.tok = function() {
     case 'blockquote_start': {
       let deltas = []
       // [{"type":"blockquote_start"},{"type":"paragraph","text":"p"},{"type":"newline","lines":1},{"type":"paragraph","text":"p"},{"type":"blockquote_end"}]
-      inBockquote = true
+      this.inBlockquote = true
       while (this.next().type !== 'blockquote_end') {
         deltas = deltas.concat(this.tok())
       }
-      inBockquote = false
+      this.inBlockquote = false
       
       if (/\n+/.test(deltas[deltas.length - 1].insert)) {
         deltas.pop()
@@ -214,15 +213,41 @@ Parser.prototype.tok = function() {
       return this.deltaMaker.html(html)
     }
     case 'paragraph': {
-      if (inBockquote) {
-      
+      if (this.inBlockquote) {
+        let text = this.token.text
+        let delta = this.deltaMaker.text(text)
+        
+        if (this.peek().type === 'newline') {
+          delta.push({
+            insert: emptyLines(this.next().lines + 1),
+            attributes: { blockquote: true }
+          })
+        }
+        // else if (this.peek().type === 'paragraph') {
+        //   while (this.peek().type === 'paragraph') {
+        //     text += ('\n' + this.next().text)
+        //   }
+        //   delta = this.deltaMaker.text(text)
+        //   delta.push({
+        //     insert: emptyLines(1),
+        //     attributes: { blockquote: true }
+        //   })
+        // }
+        else {
+          delta.push({
+            insert: emptyLines(1),
+            attributes: { blockquote: true }
+          })
+        }
+        
+        return delta
       }
       else {
         let text = this.token.text + '\n'
   
         while (this.peek().type === 'newline' ||
-        this.peek().type === 'paragraph'
-          ) {
+               this.peek().type === 'paragraph'
+        ) {
           let next = this.next()
     
           if (next.type === 'newline') {

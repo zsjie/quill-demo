@@ -194,7 +194,7 @@ InlineLexer.prototype.output = function(src) {
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length)
       delta = this.deltaMaker.text(escape(this.smartypants(cap[0])))
-      out.push(delta)
+      out = out.concat(delta)
       continue
     }
     
