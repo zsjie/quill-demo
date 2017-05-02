@@ -4,8 +4,6 @@ export default function (delta) {
   let ops = delta.ops
   let out = ''
   let newLine = ''
-  let inCodeBlock = false
-  let inList = false
   
   let listIndex = 0
   
@@ -18,6 +16,9 @@ export default function (delta) {
       
       for (let attr of Object.keys(attributes)) {
         switch (attr) {
+          case 'header':
+            newLine = formatter('header', newLine, attributes[attr])
+            break
           case 'list':
             listIndex++
             let listType = attributes[attr]
@@ -41,7 +42,8 @@ export default function (delta) {
             break
         }
       }
-    } else {
+    }
+    else {
       let nextOp = peek(ops, i)
       if (containLineBreak(insert) && !endWithLineBreak(insert)) {
         if (nextOp && isFormatOp(nextOp) ) {
@@ -63,10 +65,8 @@ export default function (delta) {
   
   // handle unnecessary blank line added by Quill
   if (endWithLineBreak(out)) {
-    out = out.slice(0, out.length - 1)
+    out = out.slice(0, -1)
   }
-  
-  console.log(out)
   
   return out
 }

@@ -5,10 +5,22 @@ import marker from '../scripts/marker'
 describe('marker', () => {
   it('should recognize empty lines between paragraphs', () => {
     let md = 'p\n\n\np\n'
-    expect(getInsert(marker(md))).to.equal(getInsert(new Delta().insert(md)))
+    let delta = new Delta().insert(md)
+    expect(stringify(marker(md))).to.equal(stringify(delta))
+  })
+  
+  it('should recognize empty lines between header and paragraph', () => {
+    let md = '# h1\n\n\np\n'
+    expect(stringify(marker(md))).to.equal(
+      stringify(
+        new Delta().insert('h1')
+          .insert('\n', { header: 1 })
+          .insert('\n\np\n')
+      )
+    )
   })
 })
 
-function getInsert (delta) {
-  return delta.ops[0].insert
+function stringify (obj) {
+  return JSON.stringify(obj)
 }

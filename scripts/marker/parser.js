@@ -1,6 +1,7 @@
 import defaults from './defaults'
 import DeltaMaker from './deltaMaker'
 import InlineLexer from './lexer/inlineLexer'
+import { emptyLines } from './helpers'
 
 /**
  * Parsing & Compiling
@@ -31,10 +32,6 @@ Parser.parse = function(src, options, deltaMaker) {
 Parser.prototype.parse = function(src) {
   this.inline = new InlineLexer(src.links, this.options, this.deltaMaker)
   this.tokens = src.reverse()
-  let debug = false
-  debug && this.tokens.forEach(ele => {
-    console.log(ele)
-  })
   
   let out = []
   while (this.next()) {
@@ -84,7 +81,23 @@ Parser.prototype.tok = function() {
       return [{ insert: '' }]
     }
     case 'newline': {
-      return this.deltaMaker.newline(this.token.lines)
+      let text = emptyLines(this.token.lines)
+  
+      while (this.peek().type === 'newline' ||
+             this.peek().type === 'paragraph'
+      ) {
+        let next = this.next()
+    
+        if (next.type === 'newline') {
+          text += emptyLines(next.lines)
+        }
+    
+        if (next.type === 'paragraph') {
+          text += (next.text + '\n')
+        }
+      }
+      
+      return this.deltaMaker.newline(text)
     }
     case 'hr': {
       return this.deltaMaker.hr()
@@ -204,9 +217,7 @@ Parser.prototype.tok = function() {
         let next = this.next()
         
         if (next.type === 'newline') {
-          for (let i = 0; i < next.lines; i++) {
-            text += '\n'
-          }
+          text += emptyLines(next.lines)
         }
         
         if (next.type === 'paragraph') {

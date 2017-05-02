@@ -19,9 +19,9 @@ export default function formatter (format, txt, value1, value2) {
 
 function header (txt, level) {
   let symbol = '######'
-  let prefix = symbol.slice(0, level) + ' '
+  let prefix = symbol.slice(0, level)
   
-  return prefixWith(prefix, txt)
+  return `${prefix} ${txt}\n`
 }
 
 function list (txt, type, listIndex) {

@@ -27,7 +27,7 @@ let paragraph = /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/
 所以正则变为这样：
 
 ```javascript
-let paragraph = /^((?:[^\n]+(?!hr|heading|lheading|blockquote|tag|def))+)(\n|$)/
+let paragraph = /^((?:[^\n]+(?!hr|heading|lheading|blockquote|tag|def))+)(?:\n|$)/
 let newLine = /^\n+/
 ```
 

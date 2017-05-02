@@ -34,3 +34,12 @@ export function merge(obj) {
   
   return obj
 }
+
+export function emptyLines (n) {
+  let text = ''
+  for (let i = 0; i < n; i++) {
+    text += '\n'
+  }
+  
+  return text
+}

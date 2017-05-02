@@ -1,7 +1,9 @@
 const marked = require('marked')
 const Delta = require('quill-delta')
 
-const reg = /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/
+let delta = new Delta()
+  .insert('h1')
+  .insert('\n', { header: 1 })
 
-console.log(reg.exec('p\n\n\np\n'))
+console.log(JSON.stringify(delta))
 

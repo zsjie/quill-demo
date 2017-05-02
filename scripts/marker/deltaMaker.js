@@ -2,13 +2,8 @@ function DeltaMaker(options) {
   this.options = options || {}
 }
 
-DeltaMaker.prototype.newline = function (lines) {
-  let insert = ''
-  for (let i = 0; i < lines; i++) {
-    insert += '\n'
-  }
-  
-  return [{ insert }]
+DeltaMaker.prototype.newline = function (text) {
+  return [{ insert: text }]
 }
 
 DeltaMaker.prototype.code = function (code, lang, escaped) {
