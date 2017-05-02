@@ -81,7 +81,10 @@ window.quill = quill
 window.expander = expander
 window.markder = marker
 
-console.log(JSON.stringify(marker.Lexer.lex('# h1\n\n\np\n')))
+let tokens = marker.Lexer.lex('> p\np\n\n> p\n')
+console.log(JSON.stringify(tokens))
+let pDelta = marker.Parser.parse(tokens)
+console.log(JSON.stringify(pDelta))
 
 loadContent()
 

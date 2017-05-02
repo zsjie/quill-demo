@@ -19,6 +19,17 @@ describe('marker', () => {
       )
     )
   })
+  
+  it('should recognize blockquote', () => {
+    let md = '> p\n'
+    expect(stringify(marker(md))).to.equal(
+      stringify(
+        new Delta()
+          .insert('p')
+          .insert('\n', { blockquote: true })
+      )
+    )
+  })
 })
 
 function stringify (obj) {

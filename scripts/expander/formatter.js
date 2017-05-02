@@ -31,7 +31,7 @@ function list (txt, type, listIndex) {
 }
 
 function blockquote (txt) {
-  return `> ${txt}\n`
+  return `> ${txt}`
 }
 
 function fences (txt) {

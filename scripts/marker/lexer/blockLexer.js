@@ -170,24 +170,20 @@ Lexer.prototype.token = function(src, top, bq) {
       
       this.tokens.push({
         type: 'blockquote_start'
-      });
+      })
       
-      cap = cap[0].replace(/^ *> ?/gm, '');
+      cap = cap[0].replace(/^ *> ?/gm, '')
       
       // Pass `top` to keep the current
       // "toplevel" state. This is exactly
       // how markdown.pl works.
-      this.token(cap, top, true);
-  
-      if(this.tokens[this.tokens.length - 1].type === 'newline') {
-        this.tokens.pop()
-      }
+      this.token(cap, top, true)
       
       this.tokens.push({
         type: 'blockquote_end'
-      });
+      })
       
-      continue;
+      continue
     }
     
     // list

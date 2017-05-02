@@ -16,13 +16,17 @@ export default function (delta) {
       
       for (let attr of Object.keys(attributes)) {
         switch (attr) {
+          case 'blockquote':
+            newLine += op.insert
+            newLine = formatter(attr, newLine)
+            break
           case 'header':
-            newLine = formatter('header', newLine, attributes[attr])
+            newLine = formatter(attr, newLine, attributes[attr])
             break
           case 'list':
             listIndex++
             let listType = attributes[attr]
-            newLine = formatter('list', newLine, listType, listIndex)
+            newLine = formatter(attr, newLine, listType, listIndex)
             
             // handle empty list item
             if (containEmptyListItem(op)) {
@@ -61,11 +65,6 @@ export default function (delta) {
       out += newLine
       newLine = ''
     }
-  }
-  
-  // handle unnecessary blank line added by Quill
-  if (endWithLineBreak(out)) {
-    out = out.slice(0, -1)
   }
   
   return out

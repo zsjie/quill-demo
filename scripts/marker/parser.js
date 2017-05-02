@@ -76,6 +76,8 @@ Parser.prototype.parseText = function() {
  */
 
 Parser.prototype.tok = function() {
+  let inBockquote = false
+  
   switch (this.token.type) {
     case 'space': {
       return [{ insert: '' }]
@@ -149,20 +151,23 @@ Parser.prototype.tok = function() {
     }
     case 'blockquote_start': {
       let deltas = []
-      
+      // [{"type":"blockquote_start"},{"type":"paragraph","text":"p"},{"type":"newline","lines":1},{"type":"paragraph","text":"p"},{"type":"blockquote_end"}]
+      inBockquote = true
       while (this.next().type !== 'blockquote_end') {
         deltas = deltas.concat(this.tok())
       }
+      inBockquote = false
+      
       if (/\n+/.test(deltas[deltas.length - 1].insert)) {
         deltas.pop()
       }
+      
       deltas.push({
         insert: '\n',
         attributes: {
           blockquote: true
         }
       })
-      // deltas.push({ insert: '\n' })
       
       return this.deltaMaker.blockquote(deltas)
     }
@@ -209,25 +214,30 @@ Parser.prototype.tok = function() {
       return this.deltaMaker.html(html)
     }
     case 'paragraph': {
-      let text = this.token.text + '\n'
+      if (inBockquote) {
       
-      while (this.peek().type === 'newline' ||
-             this.peek().type === 'paragraph'
-      ) {
-        let next = this.next()
-        
-        if (next.type === 'newline') {
-          text += emptyLines(next.lines)
-        }
-        
-        if (next.type === 'paragraph') {
-          text += (next.text + '\n')
-        }
       }
+      else {
+        let text = this.token.text + '\n'
   
-      let deltas = this.inline.output(text)
+        while (this.peek().type === 'newline' ||
+        this.peek().type === 'paragraph'
+          ) {
+          let next = this.next()
+    
+          if (next.type === 'newline') {
+            text += emptyLines(next.lines)
+          }
+    
+          if (next.type === 'paragraph') {
+            text += (next.text + '\n')
+          }
+        }
   
-      return this.deltaMaker.paragraph(deltas)
+        let deltas = this.inline.output(text)
+  
+        return this.deltaMaker.paragraph(deltas)
+      }
     }
     case 'text': {
       return this.parseText()
