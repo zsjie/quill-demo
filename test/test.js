@@ -6,4 +6,4 @@ let delta = new Delta()
   .insert('\n', { header: 1 })
 
 console.log(JSON.stringify(delta))
-console.log(marked('> acc\n\na\n\n\n>cba'))
+console.log(marked('- a\n\n---\n- b'))

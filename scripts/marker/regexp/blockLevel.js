@@ -30,8 +30,8 @@ block.list = replace(block.list)
   ()
 
 block.blockquote = replace(block.blockquote)
-('def', block.def)
-()
+  ('def', block.def)
+  ()
 
 block._tag = '(?!(?:'
   + 'a|em|strong|small|s|cite|q|dfn|abbr|data|time|code'

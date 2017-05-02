@@ -150,7 +150,6 @@ Parser.prototype.tok = function() {
     }
     case 'blockquote_start': {
       let deltas = []
-      // [{"type":"blockquote_start"},{"type":"paragraph","text":"p"},{"type":"newline","lines":1},{"type":"paragraph","text":"p"},{"type":"blockquote_end"}]
       this.inBlockquote = true
       while (this.next().type !== 'blockquote_end') {
         deltas = deltas.concat(this.tok())
@@ -223,16 +222,6 @@ Parser.prototype.tok = function() {
             attributes: { blockquote: true }
           })
         }
-        // else if (this.peek().type === 'paragraph') {
-        //   while (this.peek().type === 'paragraph') {
-        //     text += ('\n' + this.next().text)
-        //   }
-        //   delta = this.deltaMaker.text(text)
-        //   delta.push({
-        //     insert: emptyLines(1),
-        //     attributes: { blockquote: true }
-        //   })
-        // }
         else {
           delta.push({
             insert: emptyLines(1),
