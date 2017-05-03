@@ -43,3 +43,41 @@ export function emptyLines (n) {
   
   return text
 }
+
+/**
+ * merge neighboring ops which have no attributes:
+ * [{"insert":"\n"}, {"insert":"b"}, ...] => [{"insert":"\nb"}, ...]
+ */
+
+export function mergeOps (out) {
+  let result = []
+  let cur
+  
+  while (cur = next(out)) {
+    if (!noAttributes(cur)) {
+      result.push(cur)
+      continue
+    }
+    
+    while (noAttributes(peek(out))) {
+      cur.insert += next(out).insert
+    }
+    
+    result.push(cur)
+  }
+  
+  return result
+}
+
+function noAttributes (op) {
+  return typeof op.attributes === 'undefined' &&
+    typeof op.insert === 'string'
+}
+
+function peek (out) {
+  return out[0] || 0
+}
+
+function next (out) {
+  return out.shift()
+}

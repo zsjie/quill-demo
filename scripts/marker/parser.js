@@ -1,7 +1,7 @@
 import defaults from './defaults'
 import DeltaMaker from './deltaMaker'
 import InlineLexer from './lexer/inlineLexer'
-import { emptyLines } from './helpers'
+import { emptyLines, mergeOps } from './helpers'
 
 /**
  * Parsing & Compiling
@@ -39,7 +39,7 @@ Parser.prototype.parse = function(src) {
     out = out.concat(this.tok())
   }
   
-  return out
+  return mergeOps(out)
 }
 
 /**

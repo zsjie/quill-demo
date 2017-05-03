@@ -72,14 +72,14 @@ describe('marker', () => {
     )
   })
   
-  it('should make out the empty line in list', () => {
+  it('should make out the empty line between lists', () => {
     let md = '- a\n\n- b\n'
     expect(stringify(marker(md))).to.equal(
       stringify(
         new Delta()
           .insert('a')
           .insert('\n', { list: 'bullet' })
-          .insert('b')
+          .insert('\nb')
           .insert('\n', { list: 'bullet' })
       )
     )
