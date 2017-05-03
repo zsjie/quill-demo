@@ -81,7 +81,7 @@ window.quill = quill
 window.expander = expander
 window.markder = marker
 
-let tokens = marker.Lexer.lex('> p\np\n\n> p\n')
+let tokens = marker.Lexer.lex('- a\n\n- b\n')
 console.log(JSON.stringify(tokens))
 let pDelta = marker.Parser.parse(tokens)
 console.log(JSON.stringify(pDelta))

@@ -79,7 +79,7 @@ Parser.prototype.parseText = function() {
 Parser.prototype.tok = function() {
   switch (this.token.type) {
     case 'space': {
-      return [{ insert: '' }]
+      return this.deltaMaker.text('')
     }
     case 'newline': {
       let text = emptyLines(this.token.lines)
@@ -176,8 +176,8 @@ Parser.prototype.tok = function() {
       while (this.next().type !== 'list_end') {
         deltas = deltas.concat(this.tok())
         deltas.push({
-          attributes: { list: type },
-          insert: '\n'
+          insert: '\n',
+          attributes: { list: type }
         })
       }
       
@@ -200,7 +200,7 @@ Parser.prototype.tok = function() {
       let deltas = []
       
       while (this.next().type !== 'list_item_end') {
-        deltas.push(this.tok())
+        deltas = deltas.concat(this.tok())
       }
       
       return this.deltaMaker.listitem(deltas)
