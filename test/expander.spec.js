@@ -90,6 +90,13 @@ describe('expander', () => {
     expect(expander(delta)).to.equal('++foo++ bar\n')
   })
   
+  it('should expand link format', () => {
+    let delta = new Delta()
+      .insert('foo', { link: 'bar.com' })
+      .insert('\n')
+    expect(expander(delta)).to.equal('[foo](bar.com)\n')
+  })
+  
   it('should expand multi format', () => {
     let delta = new Delta()
       .insert('foo', { strike: true, bold: true })

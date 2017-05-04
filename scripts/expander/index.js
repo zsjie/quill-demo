@@ -65,7 +65,7 @@ export default function (delta) {
       let attrs = cur.attributes
   
       for (let attr of Object.keys(attrs)) {
-        insert = formatter(attr, insert)
+        insert = formatter(attr, insert, attrs[attr])
       }
       
       newLine += insert
