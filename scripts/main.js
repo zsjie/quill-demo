@@ -20,11 +20,12 @@ hljs.configure({   // optionally configure hljs
 let quill = new Quill('#quill-editor', {
   modules: {
     syntax: true,
+    formula: true,
     toolbar: [
       [{ header: 1 }, { header: 2 }],
       ['bold', 'italic', 'underline', 'strike'],
       [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'blockquote', 'code-block']
+      ['link', 'blockquote', 'code-block', 'formula']
     ]
   },
   placeholder: '',
