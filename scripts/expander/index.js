@@ -10,10 +10,10 @@ export default function (delta) {
   while (cur = next(ops)) {
     let insert = cur.insert
     
-    if (isFormatOp(cur)) {
-      let attrs = Object.keys(cur.attributes)
+    if (isBlockFmt(cur)) {
+      let attrs = cur.attributes
       
-      for (let attr of attrs) {
+      for (let attr of Object.keys(attrs)) {
         switch (attr) {
           case 'blockquote':
             newLine += insert
@@ -44,7 +44,7 @@ export default function (delta) {
             
             break
           case 'code-block':
-            newLine = `\`\`\`\n${newLine}${cur.insert}`
+            newLine = `\`\`\`\n${newLine}${insert}`
             
             while (peek(ops, 1) && peek(ops, 1).attributes['code-block']) {
               let nextOp = next(ops)
@@ -61,10 +61,19 @@ export default function (delta) {
         }
       }
     }
+    else if (isInlineFmt(cur)) {
+      let attrs = cur.attributes
+  
+      for (let attr of Object.keys(attrs)) {
+        insert = formatter(attr, insert)
+      }
+      
+      newLine += insert
+    }
     else {
       let nextOp = peek(ops)
       if (containLineBreak(insert) && !endWithLineBreak(insert)) {
-        if (nextOp && isFormatOp(nextOp) ) {
+        if (nextOp && isBlockFmt(nextOp) ) {
           let lastBreakPos = insert.lastIndexOf('\n')
           out += insert.slice(0, lastBreakPos + 1)
           newLine = insert.slice(lastBreakPos + 1)
@@ -79,6 +88,11 @@ export default function (delta) {
       out += newLine
       newLine = ''
     }
+  }
+  
+  // handle singe op
+  if (newLine !== '') {
+    out += newLine
   }
   
   return out
@@ -99,13 +113,14 @@ function next (ops) {
   return ops.shift()
 }
 
-/**
- * check if an 'op' is an formatting operation:
- * { insert: '\n', attributes: { ... } }
- */
-function isFormatOp (op) {
-  return op.insert.match(/\n+/) &&
-         op.attributes !== undefined
+function isBlockFmt (op) {
+  return typeof op.attributes !== 'undefined' &&
+         op.insert.match(/^\n+$/)
+}
+
+function isInlineFmt (op) {
+  return typeof op.attributes !== 'undefined' &&
+         !op.insert.match(/^\n+$/)
 }
 
 function endWithLineBreak (str) {

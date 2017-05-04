@@ -81,7 +81,7 @@ window.quill = quill
 window.expander = expander
 window.markder = marker
 
-let tokens = marker.Lexer.lex('```javascript\nsome code\n some code\n```')
+let tokens = marker.Lexer.lex('**foo**')
 console.log(JSON.stringify(tokens))
 let pDelta = marker.Parser.parse(tokens)
 console.log(JSON.stringify(pDelta))

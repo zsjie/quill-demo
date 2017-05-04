@@ -44,4 +44,56 @@ describe('expander', () => {
     
     expect(expander(deltas)).to.equal('```\nlet a = 1\n\n\nlet b = 2\n```\n')
   })
+  
+  it('should expand bold format', () => {
+    let delta = new Delta()
+      .insert('foo', { bold: true })
+      .insert(' bar\n')
+    expect(expander(delta)).to.equal('**foo** bar\n')
+  })
+  
+  it('should expand bold format in blockquote', () => {
+    let delta = new Delta()
+      .insert('foo', { bold: true })
+      .insert(' bar')
+      .insert('\n', { blockquote: true })
+    expect(expander(delta)).to.equal('> **foo** bar\n')
+  })
+  
+  it('should expand bold format in list', () => {
+    let delta = new Delta()
+      .insert('foo', { bold: true })
+      .insert('\n', { list: 'bullet' })
+      .insert('bar')
+      .insert('\n', { list: 'bullet' })
+    expect(expander(delta)).to.equal('- **foo**\n- bar\n')
+  })
+  
+  it('should expand strike format', () => {
+    let delta = new Delta()
+      .insert('foo', { strike: true })
+      .insert(' bar\n')
+    expect(expander(delta)).to.equal('~~foo~~ bar\n')
+  })
+  
+  it('should expand italic format', () => {
+    let delta = new Delta()
+      .insert('foo', { italic: true })
+      .insert(' bar\n')
+    expect(expander(delta)).to.equal('*foo* bar\n')
+  })
+  
+  it('should expand underline format', () => {
+    let delta = new Delta()
+      .insert('foo', { underline: true })
+      .insert(' bar\n')
+    expect(expander(delta)).to.equal('++foo++ bar\n')
+  })
+  
+  it('should expand multi format', () => {
+    let delta = new Delta()
+      .insert('foo', { strike: true, bold: true })
+      .insert(' bar\n')
+    expect(expander(delta)).to.equal('**~~foo~~** bar\n')
+  })
 })

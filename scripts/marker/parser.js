@@ -214,7 +214,7 @@ Parser.prototype.tok = function() {
     case 'paragraph': {
       if (this.inBlockquote) {
         let text = this.token.text
-        let delta = this.deltaMaker.text(text)
+        let delta = this.inline.output(text)
         
         if (this.peek().type === 'newline') {
           delta.push({
