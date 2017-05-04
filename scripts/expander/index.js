@@ -4,32 +4,31 @@ export default function (delta) {
   let ops = delta.ops
   let out = ''
   let newLine = ''
-  
   let listIndex = 0
+  let cur
   
-  for (let i = 0, l = ops.length; i < l; i++) {
-    let op = ops[i]
-    let insert = op.insert
+  while (cur = next(ops)) {
+    let insert = cur.insert
     
-    if (isFormatOp(op)) {
-      let attributes = op.attributes
+    if (isFormatOp(cur)) {
+      let attrs = Object.keys(cur.attributes)
       
-      for (let attr of Object.keys(attributes)) {
+      for (let attr of attrs) {
         switch (attr) {
           case 'blockquote':
-            newLine += op.insert
+            newLine += insert
             newLine = formatter(attr, newLine)
             break
           case 'header':
-            newLine = formatter(attr, newLine, attributes[attr])
+            newLine = formatter(attr, newLine, attrs[attr])
             break
           case 'list':
             listIndex++
-            let listType = attributes[attr]
+            let listType = attrs[attr]
             newLine = formatter(attr, newLine, listType, listIndex)
             
             // handle empty list item
-            if (containEmptyListItem(op)) {
+            if (containEmptyListItem(cur)) {
               let tmp = insert.slice(1)
               let emptyItemCount = tmp.length
               for (let j = 0; j < emptyItemCount; j++) {
@@ -39,16 +38,31 @@ export default function (delta) {
               }
             }
             
-            if (isLastItem(ops, i)) {
+            if (isLastItem(ops)) {
               listIndex = 0
             }
+            
+            break
+          case 'code-block':
+            newLine = `\`\`\`\n${newLine}${cur.insert}`
+            
+            while (peek(ops, 1) && peek(ops, 1).attributes['code-block']) {
+              let nextOp = next(ops)
+              let nextTwoOp = next(ops)
+              
+              newLine += (nextOp.insert + nextTwoOp.insert)
+            }
+            
+            newLine = `${newLine}\`\`\`\n`
+            out += newLine
+            newLine = ''
             
             break
         }
       }
     }
     else {
-      let nextOp = peek(ops, i)
+      let nextOp = peek(ops)
       if (containLineBreak(insert) && !endWithLineBreak(insert)) {
         if (nextOp && isFormatOp(nextOp) ) {
           let lastBreakPos = insert.lastIndexOf('\n')
@@ -73,9 +87,16 @@ export default function (delta) {
 /**
  * Preview Next Operation
  */
-function peek (ops, index, step) {
-  step = step ? step: 1
-  return ops[index + step]
+function peek (ops, step) {
+  if (step) {
+    return ops[step]
+  }
+  
+  return ops[0] || 0
+}
+
+function next (ops) {
+  return ops.shift()
 }
 
 /**
@@ -99,9 +120,9 @@ function containEmptyListItem (op) {
   return op.insert.match(/\n{2,}/) && op.attributes.list
 }
 
-function isLastItem (ops, index) {
-  let nextOp = peek(ops, index)
-  let nextTwoOp = peek(ops, index, 2)
+function isLastItem (ops) {
+  let nextOp = peek(ops)
+  let nextTwoOp = peek(ops, 1)
   return !nextOp ||
          containLineBreak(nextOp.insert) ||
          !nextTwoOp ||

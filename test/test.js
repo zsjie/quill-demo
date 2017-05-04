@@ -1,31 +1,17 @@
 const marked = require('marked')
 const Delta = require('quill-delta')
 
-let listReg = /^( *)(bull) [\s\S]+?(?:hr|def|\n(?!\1bull )|\s*$)/
-let bull = /(?:[*+-]|\d+)/
-let list = '- ab\n- d\n- e\n\n\n\na\nfgh'
-let reg3 = /(?:[*+-]) [\s\S]+?(?:\n(?! )(?!(?:[*+-]|\d+) )\n*)/
-let item = /^( *)((?:[*+-]|\d+)) [^\n]*(?:(\1(?:[*+-]|\d+) )[^\n]*)*/gm
+let md1 = '    let a = 1\n    let b = 2\n\n\nabcd'
+let md2 = '```\nlet a = 1\nlet b = 2```\n\n\n\nabcd'
+let codeBlock = /^( {4}[^\n]+\n?)+/
+let fences = /^ *(`{3,}|~{3,})[ \.]*(\S+)? *\n([\s\S]*?)\s*\1 *(?:\n|$)/
 
-listReg = replace(listReg)
-  (/bull/g, bull)
-  ()
+let str = 'let a = 1\nlet b = 2\n\n\nlet c = 3'
 
-function replace(regex, opt) {
-  regex = regex.source
-  opt = opt || ''
-  return function self(name, val) {
-    if (!name) return new RegExp(regex, opt)
-    val = val.source || val
-    val = val.replace(/(^|[^\[])\^/g, '$1')
-    regex = regex.replace(name, val)
-    return self
-  }
-}
+console.log(md1.match(codeBlock))
+console.log(md2.match(fences))
+console.log(str.split('\n'))
 
-console.log(list.match(listReg))
-console.log(marked(list))
-console.log(list.match(item))
 
 
 

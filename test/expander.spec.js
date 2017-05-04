@@ -34,4 +34,14 @@ describe('expander', () => {
       .insert('\n', { blockquote: true })
     )).to.equal('> p\n\n> p\n')
   })
+  
+  it('should expand code block', () => {
+    let deltas = new Delta()
+      .insert('let a = 1')
+      .insert('\n\n\n', { 'code-block': true })
+      .insert('let b = 2')
+      .insert('\n', { 'code-block': true })
+    
+    expect(expander(deltas)).to.equal('```\nlet a = 1\n\n\nlet b = 2\n```\n')
+  })
 })

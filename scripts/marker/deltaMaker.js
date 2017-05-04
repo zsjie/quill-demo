@@ -7,23 +7,31 @@ DeltaMaker.prototype.newline = function (text) {
 }
 
 DeltaMaker.prototype.code = function (code, lang, escaped) {
+  let attributes = { 'code-block': true }
   let lines = code.split('\n')
-  let deltas = lines.reduce((preVal, line) => {
-    preVal.push(
-      {
-        insert: line
-      },
-      {
-        insert: '\n',
-        attributes: {
-          'code-block': true
-        }
-      }
-    )
+  let deltas = []
+  let cur
+  
+  while (cur = lines.shift()) {
+    if (lines[0] !== '') {
+      deltas.push(
+        { insert: cur },
+        { insert: '\n', attributes }
+      )
+      continue
+    }
     
-    return preVal
-  }, [])
-  deltas.unshift({ insert: '\n' })
+    let emptyLines = '\n'
+    while (lines[0] === '') {
+      emptyLines += '\n'
+      lines.shift()
+    }
+    
+    deltas.push(
+      { insert: cur },
+      { insert: emptyLines, attributes }
+    )
+  }
   
   return deltas
 }

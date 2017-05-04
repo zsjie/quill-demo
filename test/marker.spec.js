@@ -84,6 +84,25 @@ describe('marker', () => {
       )
     )
   })
+  
+  it('should make out code block', () => {
+    let md = '    let a = 1\n    let b = 2\n'
+    let delta = new Delta()
+      .insert('let a = 1')
+      .insert('\n', { 'code-block': true })
+      .insert('let b = 2')
+      .insert('\n', { 'code-block': true })
+    
+    expect(stringify(marker(md))).to.equal(stringify(delta))
+  
+    md = '```\nlet a = 1\n\n\nlet b = 2```\n'
+    delta = new Delta()
+      .insert('let a = 1')
+      .insert('\n\n\n', { 'code-block': true })
+      .insert('let b = 2')
+      .insert('\n', { 'code-block': true })
+    expect(stringify(marker(md))).to.equal(stringify(delta))
+  })
 })
 
 function stringify (obj) {
