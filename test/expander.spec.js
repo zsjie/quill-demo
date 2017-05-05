@@ -103,11 +103,4 @@ describe('expander', () => {
       .insert(' bar\n')
     expect(expander(delta)).to.equal('**~~foo~~** bar\n')
   })
-  
-  it('should expand image', () => {
-    let delta = new Delta()
-      .insert({ image: 'url' })
-      .insert('\n')
-    expect(expander(delta)).to.equal('![alt text](url)\n')
-  })
 })

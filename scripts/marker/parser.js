@@ -14,7 +14,9 @@ function Parser(options) {
   this.options.deltaMaker = this.options.deltaMaker || new DeltaMaker
   this.deltaMaker = this.options.deltaMaker
   this.deltaMaker.options = this.options
+  
   this.inBlockquote = false
+  this.attachments = this.options.attachments || {}
 }
 
 /**

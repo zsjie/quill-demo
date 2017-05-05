@@ -103,14 +103,6 @@ describe('marker', () => {
       .insert('\n', { 'code-block': true })
     expect(stringify(marker(md))).to.equal(stringify(delta))
   })
-  
-  it('should make out image', () => {
-    let md = '![alt text](url)\n'
-    let delta = new Delta()
-      .insert({ image: 'url' })
-      .insert('\n')
-    expect(stringify(marker(md))).to.equal(stringify(delta))
-  })
 })
 
 function stringify (obj) {

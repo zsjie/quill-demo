@@ -1,9 +1,17 @@
-function Store () {
-    this.DB_NAME = 'vana-notes'
-    this.DB_VERSION = 5
-    this.DB_STORE_NAME = 'attachments'
+const Store = {
+  DB_NAME: 'vana-notes',
+  DB_VERSION: 5,
+  DB_STORE_NAME: 'attachments',
   
-  this.db = null
+  db: null,
+  
+  init,
+  getFile,
+  addFile,
+  listAll
+}
+
+function init () {
   let self = this
   
   console.debug("initDb ...");
@@ -13,7 +21,7 @@ function Store () {
     console.debug("initDb DONE")
   }
   req.onerror = function (evt) {
-    console.error("initDb:", evt.target.errorCode)
+    throw new Error(evt.target.errorCode)
   }
   
   req.onupgradeneeded = function (evt) {
@@ -26,13 +34,34 @@ function Store () {
     store.createIndex('deleted', 'deleted', { unique: false })
     store.createIndex('uploaded', 'uploaded', { unique: false })
     store.createIndex('seq', 'seq', { unique: false })
-  
   }
-  
-  return this
 }
 
-Store.prototype.getFile = (key, cb) => {
+function getFileByFilename (filename, cb) {
+  let tx = this.db.transaction(this.DB_STORE_NAME)
+  let store = tx.objectStore(this.DB_STORE_NAME)
+  let req = store.openCursor()
+  
+  req.onsuccess = (evt) => {
+    let cursor = evt.target.result
+    if (cursor) {
+      if (cursor.value.filename === filename) {
+        return cb(cursor.value.file)
+      }
+      
+      cursor.continue()
+    }
+    else {
+      throw new Error(`no such file: ${filename}`)
+    }
+  }
+  
+  req.onerror = (evt) => {
+    throw this.error
+  }
+}
+
+function getFile (key, cb) {
   let tx = this.db.transaction(this.DB_STORE_NAME, 'readonly')
   let store = tx.objectStore(this.DB_STORE_NAME)
   let req = store.get(key)
@@ -40,7 +69,7 @@ Store.prototype.getFile = (key, cb) => {
   req.onsuccess = (evt) => {
     let value = evt.target.result
     if (value)
-      cb(value.file)
+      cb(value)
   }
   
   req.onerror = function (evt) {
@@ -48,7 +77,7 @@ Store.prototype.getFile = (key, cb) => {
   }
 }
 
-Store.prototype.addFile = (data) => {
+function addFile (data) {
   if (!this.db) {
     throw new Error('db is not initialized')
   }
@@ -73,6 +102,33 @@ Store.prototype.addFile = (data) => {
   }
   req.onerror = function() {
     throw this.error
+  }
+}
+
+function listAll () {
+  let tx = this.db.transaction(this.DB_STORE_NAME)
+  let store = tx.objectStore(this.DB_STORE_NAME)
+  let req
+  
+  req = store.count()
+  req.onsuccess = (evt) => {
+    console.log(`${evt.target.result} images stored`)
+  }
+  req.onerror = (evt) => {
+    throw this.error
+  }
+  
+  req = store.openCursor()
+  req.onsuccess = (evt) => {
+    let cursor = evt.target.result
+    if (cursor) {
+      console.log(`file ${cursor.key}: ${cursor.value.filename}`)
+      
+      cursor.continue()
+    }
+    else {
+      console.log('no more entries')
+    }
   }
 }
 

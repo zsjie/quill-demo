@@ -44,6 +44,13 @@ export function emptyLines (n) {
   return text
 }
 
+export function sanitize(url, protocols) {
+  let anchor = document.createElement('a');
+  anchor.href = url;
+  let protocol = anchor.href.slice(0, anchor.href.indexOf(':'));
+  return protocols.indexOf(protocol) > -1;
+}
+
 /**
  * merge neighboring ops which have no attributes:
  * [{"insert":"\n"}, {"insert":"b"}, ...] => [{"insert":"\nb"}, ...]

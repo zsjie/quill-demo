@@ -2,8 +2,14 @@ import lstorage from './utils/lstorage'
 import articleSample from './data/article-sample'
 import marker from './marker'
 import expander from './expander'
+import Store from './store'
 
 const Delta = Quill.import('delta')
+
+window.VanaStore = Store
+VanaStore.init()
+
+const ATTACHMENTS = {}
 
 /**
  * init highlight js
@@ -44,6 +50,12 @@ toolbar.addHandler('image', () => {
     fileInput.addEventListener('change', () => {
       if (fileInput.files !== null && fileInput.files[0] !== null) {
         let file = fileInput.files[0]
+  
+        VanaStore.addFile({
+          filename: file.name,
+          file
+        })
+        
         let img = document.createElement('img')
         img.onload = () => {
           let range = quill.getSelection(true)
@@ -53,12 +65,14 @@ toolbar.addHandler('image', () => {
               .insert({ image: img.src })
             , Quill.sources.USER)
           
-          // TODO: store file to indexedDB
-          // URL.revokeObjectURL(img.src)
+          URL.revokeObjectURL(img.src)
           fileInput.value = ""
         }
-        img.src = URL.createObjectURL(file)
+        let objUrl = URL.createObjectURL(file)
+        img.src = objUrl
         console.log(img.src)
+        
+        ATTACHMENTS[file.name] = objUrl
       }
     })
     toolBarContainer.appendChild(fileInput)
@@ -90,8 +104,7 @@ function toggleMarkdown () {
     }
     
     md = aceEditor.session.getValue()
-    deltas = marker(md)
-    console.log(deltas)
+    deltas = marker(md, ATTACHMENTS)
     quill.setContents(deltas)
     qEditor.classList.remove('ql-editor-hide')
     aEditor.classList.remove('ace-editor-show')
@@ -101,7 +114,7 @@ function toggleMarkdown () {
     }
   
     deltas = quill.getContents()
-    md = expander(deltas)
+    md = expander(deltas, ATTACHMENTS)
     aceEditor.session.setValue(md)
   
     qEditor.classList.add('ql-editor-hide')

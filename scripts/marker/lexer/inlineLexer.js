@@ -1,7 +1,8 @@
 import defaults from '../defaults'
 import DeltaMaker from '../deltaMaker'
 import inline from '../regexp/inlineLevel'
-import { escape } from '../helpers'
+import { escape, sanitize } from '../helpers'
+import Store from '../../store'
 
 /**
  * Inline Lexer & Compiler
@@ -13,6 +14,7 @@ function InlineLexer(links, options) {
   this.rules = inline.normal
   this.deltaMaker = this.options.deltaMaker || new DeltaMaker
   this.deltaMaker.options = this.options
+  this.attachments = this.options.attachments || {}
   
   if (!this.links) {
     throw new
@@ -215,9 +217,26 @@ InlineLexer.prototype.outputLink = function(cap, link) {
   let href = escape(link.href)
   let title = link.title ? escape(link.title) : null
   
-  return cap[0].charAt(0) !== '!'
-    ? this.deltaMaker.link(href, title, this.output(cap[1]))
-    : this.deltaMaker.image(href)
+  if (cap[0].charAt(0) !== '!') {
+    return this.deltaMaker.link(href, title, this.output(cap[1]))
+  } else {
+    if (sanitize(href, ['https', 'http', 'data'])) {
+      return this.deltaMaker.image(href)
+    }
+    else {
+      href = this.attachments(href)
+      if (!href) {
+        return this.deltaMaker.image('//:0')
+      }
+      
+      if (!window.VanaStore) {
+        window.VanaStore = Store
+        VanaStore.init()
+      }
+      
+      
+    }
+  }
 }
 
 /**

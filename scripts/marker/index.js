@@ -6,9 +6,9 @@ if (typeof window !== 'undefined') {
   window.Parser = Parser
 }
 
-function marker (str) {
+function marker (str, attachments) {
   let tokens = Lexer.lex(str)
-  return { ops: Parser.parse(tokens) }
+  return { ops: Parser.parse(tokens, { attachments }) }
 }
 
 marker.Lexer = Lexer

@@ -1,6 +1,6 @@
 import formatter from './formatter'
 
-export default function (delta) {
+export default function (delta, attachments) {
   let ops = delta.ops
   let out = ''
   let newLine = ''
@@ -86,7 +86,7 @@ export default function (delta) {
         }
       }
       else { // image
-        newLine += formatter('image', insert.image)
+        newLine += formatter('image', getFilename(attachments, insert.image))
       }
     }
     
@@ -149,4 +149,15 @@ function isLastItem (ops) {
          !nextTwoOp ||
          !nextTwoOp.attributes ||
          !nextTwoOp.attributes.list
+}
+
+function getFilename (attachments, url) {
+  let filenames = Object.keys(attachments)
+  for (let filename of filenames) {
+    if (attachments[filename] === url) {
+      return filename
+    }
+  }
+  
+  return null
 }

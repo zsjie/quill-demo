@@ -3,22 +3,13 @@ const Delta = require('quill-delta')
 
 let str = '\na'
 
-function Store () {
-  this.db = null
-  
-  let self = this
-  setTimeout(() => {
-    self.db = {
-      foo: 'bar'
-    }
-  }, 100)
-  
-  return this
+let Store = {
+  foo: 'bar',
+  getFoo
 }
 
-let store = new Store()
+function getFoo () {
+  return this.foo
+}
 
-console.log(store.db)
-setTimeout(() => {
-  console.log(store.db)
-}, 1000)
+console.log(Store.getFoo())
