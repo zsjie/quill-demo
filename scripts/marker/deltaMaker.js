@@ -129,19 +129,8 @@ DeltaMaker.prototype.link = function (href, title, deltas) {
   })
 }
 
-DeltaMaker.prototype.image = function (href, title, alt) {
-  return [
-    {
-      insert: {
-        image: {
-          url: href,
-          title: title,
-          alt: alt
-        }
-      }
-    },
-    { insert: '\n' }
-  ]
+DeltaMaker.prototype.image = function (url) {
+  return [{ insert: { image: url } }]
 }
 
 DeltaMaker.prototype.text = function (text) {

@@ -72,15 +72,21 @@ export default function (delta) {
     }
     else {
       let nextOp = peek(ops)
-      if (containLineBreak(insert) && !endWithLineBreak(insert)) {
-        if (nextOp && isBlockFmt(nextOp) ) {
-          let lastBreakPos = insert.lastIndexOf('\n')
-          out += insert.slice(0, lastBreakPos + 1)
-          newLine = insert.slice(lastBreakPos + 1)
-          continue
+      if (typeof insert === 'string') {
+        if (containLineBreak(insert) && !endWithLineBreak(insert)) {
+          if (nextOp && isBlockFmt(nextOp) ) {
+            let lastBreakPos = insert.lastIndexOf('\n')
+            out += insert.slice(0, lastBreakPos + 1)
+            newLine = insert.slice(lastBreakPos + 1)
+            continue
+          }
         }
-      } else {
-        newLine += insert
+        else {
+          newLine += insert
+        }
+      }
+      else { // image
+        newLine += formatter('image', insert.image)
       }
     }
     

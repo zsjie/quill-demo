@@ -1,4 +1,3 @@
-// import Quill from 'quill'
 import lstorage from './utils/lstorage'
 import articleSample from './data/article-sample'
 import marker from './marker'
@@ -25,11 +24,46 @@ let quill = new Quill('#quill-editor', {
       [{ header: 1 }, { header: 2 }],
       ['bold', 'italic', 'underline', 'strike'],
       [{ list: 'ordered' }, { list: 'bullet' }],
-      ['link', 'blockquote', 'code-block', 'formula']
+      ['link', 'image', 'blockquote', 'code-block', 'formula']
     ]
   },
   placeholder: '',
-  theme: 'snow' // or 'bubble'
+  theme: 'snow'
+})
+
+let toolbar = quill.getModule('toolbar')
+let toolBarContainer = document.querySelector('.ql-toolbar')
+let body = document.querySelector('body')
+toolbar.addHandler('image', () => {
+  let fileInput = toolBarContainer.querySelector('input.ql-image[type=file]')
+  if (fileInput === null) {
+    fileInput = document.createElement('input')
+    fileInput.setAttribute('type', 'file')
+    fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon')
+    fileInput.classList.add('ql-image')
+    fileInput.addEventListener('change', () => {
+      if (fileInput.files !== null && fileInput.files[0] !== null) {
+        let file = fileInput.files[0]
+        let img = document.createElement('img')
+        img.onload = () => {
+          let range = quill.getSelection(true)
+          quill.updateContents(new Delta()
+              .retain(range.index)
+              .delete(range.length)
+              .insert({ image: img.src })
+            , Quill.sources.USER)
+          
+          // TODO: store file to indexedDB
+          // URL.revokeObjectURL(img.src)
+          fileInput.value = ""
+        }
+        img.src = URL.createObjectURL(file)
+        console.log(img.src)
+      }
+    })
+    toolBarContainer.appendChild(fileInput)
+  }
+  fileInput.click()
 })
 
 setTimeout(function () {
@@ -107,7 +141,7 @@ function loadContent() {
 
 // auto save
 let change = new Delta()
-window.autoSave = true
+window.autoSave = false
 quill.on('text-change', function(delta) {
   change = change.compose(delta)
 })

@@ -60,7 +60,8 @@ function link (title, url) {
   return `[${title}](${url})`
 }
 
-function image (href, title, alt) {
+function image (href, alt, title) {
+  alt = alt ? alt : 'alt text'
   return title ? `![${alt}](${href} "${title}")`
                : `![${alt}](${href})`
 }

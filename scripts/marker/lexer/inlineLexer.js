@@ -217,7 +217,7 @@ InlineLexer.prototype.outputLink = function(cap, link) {
   
   return cap[0].charAt(0) !== '!'
     ? this.deltaMaker.link(href, title, this.output(cap[1]))
-    : this.deltaMaker.image(href, title, escape(cap[1]))
+    : this.deltaMaker.image(href)
 }
 
 /**
