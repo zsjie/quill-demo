@@ -23,22 +23,22 @@ function Parser(options) {
  * Static Parse Method
  */
 
-Parser.parse = function(src, options, deltaMaker) {
+Parser.parse = async function (src, options, deltaMaker) {
   let parser = new Parser(options, deltaMaker)
-  return parser.parse(src)
+  return await parser.parse(src)
 }
 
 /**
  * Parse Loop
  */
 
-Parser.prototype.parse = function(src) {
+Parser.prototype.parse = async function (src) {
   this.inline = new InlineLexer(src.links, this.options, this.deltaMaker)
   this.tokens = src.reverse()
   
   let out = []
   while (this.next()) {
-    out = out.concat(this.tok())
+    out = out.concat(await this.tok())
   }
   
   return mergeOps(out)
@@ -64,37 +64,37 @@ Parser.prototype.peek = function() {
  * Parse Text Tokens
  */
 
-Parser.prototype.parseText = function() {
+Parser.prototype.parseText = async function () {
   let body = this.token.text
   
   while (this.peek().type === 'text') {
     body += '\n' + this.next().text
   }
   
-  return this.inline.output(body)
+  return await this.inline.output(body)
 }
 
 /**
  * Parse Current Token
  */
 
-Parser.prototype.tok = function() {
+Parser.prototype.tok = async function () {
   switch (this.token.type) {
     case 'space': {
       return this.deltaMaker.text('')
     }
     case 'newline': {
       let text = emptyLines(this.token.lines)
-  
+      
       while (this.peek().type === 'newline' ||
-             this.peek().type === 'paragraph'
-      ) {
+      this.peek().type === 'paragraph'
+        ) {
         let next = this.next()
-    
+        
         if (next.type === 'newline') {
           text += emptyLines(next.lines)
         }
-    
+        
         if (next.type === 'paragraph') {
           text += (next.text + '\n')
         }
@@ -117,7 +117,7 @@ Parser.prototype.tok = function() {
     }
     case 'table': {
       let header = ''
-        , body = ''
+        , body   = ''
         , i
         , row
         , cell
@@ -127,10 +127,10 @@ Parser.prototype.tok = function() {
       // header
       cell = ''
       for (i = 0; i < this.token.header.length; i++) {
-        flags = { header: true, align: this.token.align[i] }
+        flags = {header: true, align: this.token.align[i]}
         cell += this.deltaMaker.tablecell(
           this.inline.output(this.token.header[i]),
-          { header: true, align: this.token.align[i] }
+          {header: true, align: this.token.align[i]}
         )
       }
       header += this.deltaMaker.tablerow(cell)
@@ -142,7 +142,7 @@ Parser.prototype.tok = function() {
         for (j = 0; j < row.length; j++) {
           cell += this.deltaMaker.tablecell(
             this.inline.output(row[j]),
-            { header: false, align: this.token.align[j] }
+            {header: false, align: this.token.align[j]}
           )
         }
         
@@ -151,10 +151,10 @@ Parser.prototype.tok = function() {
       return this.deltaMaker.table(header, body)
     }
     case 'blockquote_start': {
-      let deltas = []
+      let deltas        = []
       this.inBlockquote = true
       while (this.next().type !== 'blockquote_end') {
-        deltas = deltas.concat(this.tok())
+        deltas = deltas.concat(await this.tok())
       }
       this.inBlockquote = false
       
@@ -163,7 +163,7 @@ Parser.prototype.tok = function() {
       }
       
       deltas.push({
-        insert: '\n',
+        insert:     '\n',
         attributes: {
           blockquote: true
         }
@@ -173,26 +173,26 @@ Parser.prototype.tok = function() {
     }
     case 'list_start': {
       let deltas = []
-      let type = this.token.ordered ? 'ordered' : 'bullet'
+      let type   = this.token.ordered ? 'ordered' : 'bullet'
       
       while (this.next().type !== 'list_end') {
-        deltas = deltas.concat(this.tok())
+        deltas = deltas.concat(await this.tok())
         deltas.push({
-          insert: '\n',
-          attributes: { list: type }
+          insert:     '\n',
+          attributes: {list: type}
         })
       }
       
       return this.deltaMaker.list(deltas)
     }
     case 'list_item_start': {
-      let body = []
+      let body   = []
       let deltas = []
       
       while (this.next().type !== 'list_item_end') {
         body = this.token.type === 'text'
-          ? this.parseText()
-          : this.tok()
+          ? await this.parseText()
+          : await this.tok()
         deltas = deltas.concat(body)
       }
       
@@ -202,7 +202,7 @@ Parser.prototype.tok = function() {
       let deltas = []
       
       while (this.next().type !== 'list_item_end') {
-        deltas = deltas.concat(this.tok())
+        deltas = deltas.concat(await this.tok())
       }
       
       return this.deltaMaker.listitem(deltas)
@@ -215,19 +215,19 @@ Parser.prototype.tok = function() {
     }
     case 'paragraph': {
       if (this.inBlockquote) {
-        let text = this.token.text
+        let text  = this.token.text
         let delta = this.inline.output(text)
         
         if (this.peek().type === 'newline') {
           delta.push({
-            insert: emptyLines(this.next().lines + 1),
-            attributes: { blockquote: true }
+            insert:     emptyLines(this.next().lines + 1),
+            attributes: {blockquote: true}
           })
         }
         else {
           delta.push({
-            insert: emptyLines(1),
-            attributes: { blockquote: true }
+            insert:     emptyLines(1),
+            attributes: {blockquote: true}
           })
         }
         
@@ -235,28 +235,28 @@ Parser.prototype.tok = function() {
       }
       else {
         let text = this.token.text + '\n'
-  
+        
         while (this.peek().type === 'newline' ||
-               this.peek().type === 'paragraph'
-        ) {
+        this.peek().type === 'paragraph'
+          ) {
           let next = this.next()
-    
+          
           if (next.type === 'newline') {
             text += emptyLines(next.lines)
           }
-    
+          
           if (next.type === 'paragraph') {
             text += (next.text + '\n')
           }
         }
-  
+        
         let deltas = this.inline.output(text)
-  
+        
         return this.deltaMaker.paragraph(deltas)
       }
     }
     case 'text': {
-      return this.parseText()
+      return await this.parseText()
     }
   }
 }

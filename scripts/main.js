@@ -2,13 +2,10 @@ import lstorage from './utils/lstorage'
 import articleSample from './data/article-sample'
 import marker from './marker'
 import expander from './expander'
-import Store from './store'
+import DB from './db'
 
+const db = new DB()
 const Delta = Quill.import('delta')
-
-window.VanaStore = Store
-VanaStore.init()
-
 const ATTACHMENTS = {}
 
 /**
@@ -47,15 +44,16 @@ toolbar.addHandler('image', () => {
     fileInput.setAttribute('type', 'file')
     fileInput.setAttribute('accept', 'image/png, image/gif, image/jpeg, image/bmp, image/x-icon')
     fileInput.classList.add('ql-image')
-    fileInput.addEventListener('change', () => {
+    fileInput.addEventListener('change', async () => {
       if (fileInput.files !== null && fileInput.files[0] !== null) {
         let file = fileInput.files[0]
-  
-        VanaStore.addFile({
+        
+        let fileId = await db.addFile({
           filename: file.name,
           file
         })
-        
+        console.log(fileId)
+  
         let img = document.createElement('img')
         img.onload = () => {
           let range = quill.getSelection(true)
@@ -72,7 +70,11 @@ toolbar.addHandler('image', () => {
         img.src = objUrl
         console.log(img.src)
         
-        ATTACHMENTS[file.name] = objUrl
+        ATTACHMENTS[file.name] = {
+          name: file.name,
+          url: objUrl,
+          fileId
+        }
       }
     })
     toolBarContainer.appendChild(fileInput)
@@ -92,9 +94,9 @@ setTimeout(function () {
 }, 0)
 
 let inMdMode = false
-function toggleMarkdown () {
-  let qEditor = document.querySelector('.ql-editor')
-  let aEditor = document.querySelector('#ace-editor')
+async function toggleMarkdown() {
+  let qEditor   = document.querySelector('.ql-editor')
+  let aEditor   = document.querySelector('#ace-editor')
   let qlFormats = document.querySelectorAll('.ql-formats')
   let md, deltas
   
@@ -103,8 +105,8 @@ function toggleMarkdown () {
       qlFormats[i].classList.remove('ql-formats-hide')
     }
     
-    md = aceEditor.session.getValue()
-    deltas = marker(md, ATTACHMENTS)
+    md     = aceEditor.session.getValue()
+    deltas = await marker(md, ATTACHMENTS)
     quill.setContents(deltas)
     qEditor.classList.remove('ql-editor-hide')
     aEditor.classList.remove('ace-editor-show')
@@ -112,11 +114,11 @@ function toggleMarkdown () {
     for (let i = 0; i < qlFormats.length; i++) {
       qlFormats[i].classList.add('ql-formats-hide')
     }
-  
+    
     deltas = quill.getContents()
-    md = expander(deltas, ATTACHMENTS)
+    md     = expander(deltas, ATTACHMENTS)
     aceEditor.session.setValue(md)
-  
+    
     qEditor.classList.add('ql-editor-hide')
     aEditor.classList.add('ace-editor-show')
   }
@@ -125,16 +127,18 @@ function toggleMarkdown () {
 }
 
 // for debug
+window.db = db
 window.quill = quill
 window.expander = expander
 window.markder = marker
 
 let tokens = marker.Lexer.lex('**foo**')
 console.log(JSON.stringify(tokens))
-let pDelta = marker.Parser.parse(tokens)
-console.log(JSON.stringify(pDelta))
+marker.Parser.parse(tokens).then(ops => {
+  console.log(ops)
+})
 
-loadContent()
+// loadContent()
 
 function loadContent() {
   let content = lstorage.get('content')

@@ -154,7 +154,7 @@ function isLastItem (ops) {
 function getFilename (attachments, url) {
   let filenames = Object.keys(attachments)
   for (let filename of filenames) {
-    if (attachments[filename] === url) {
+    if (attachments[filename].url === url) {
       return filename
     }
   }
