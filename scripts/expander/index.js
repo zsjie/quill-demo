@@ -46,7 +46,10 @@ export default function (delta, attachments) {
           case 'code-block':
             newLine = `\`\`\`\n${newLine}${insert}`
             
-            while (peek(ops, 1) && peek(ops, 1).attributes['code-block']) {
+            while (peek(ops, 1) &&
+                   peek(ops, 1).attributes &&
+                   peek(ops, 1).attributes['code-block']
+            ) {
               let nextOp = next(ops)
               let nextTwoOp = next(ops)
               

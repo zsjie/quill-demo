@@ -43,6 +43,17 @@ describe('marker', () => {
     })
   })
   
+  it('should make out empty lines between blockquote and paragraph', () => {
+    let md = `> p\n\np\n`
+    let delta = new Delta()
+      .insert('p')
+      .insert('\n', { blockquote: true })
+      .insert('\np\n')
+    return marker(md).then(mDelta => {
+      expect(stringify(mDelta)).to.equal(stringify(delta))
+    })
+  })
+  
   it('should make out paragraph line break in blockquote', () => {
     let md = '> p\np\n\n> p\n'
     let delta = new Delta()

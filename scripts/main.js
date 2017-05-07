@@ -132,33 +132,19 @@ window.quill = quill
 window.expander = expander
 window.markder = marker
 
-let tokens = marker.Lexer.lex('**foo**')
-console.log(JSON.stringify(tokens))
-marker.Parser.parse(tokens).then(ops => {
-  console.log(ops)
+loadContent().then(() => {
+  console.log('content loaded')
 })
 
-// loadContent()
-
-function loadContent() {
+async function loadContent() {
   let content = lstorage.get('content')
-  let deltas
-  if (content) {
-    deltas = new Delta()
-      .insert('foo')
-      .insert('\n', { list: 'bullet' })
-      .insert('bar')
-      .insert('\n', { list: 'bullet' })
-    quill.setContents(deltas)
-  } else {
-    deltas = marker(articleSample)
-    quill.setContents(deltas)
-  }
+  let deltas = await marker(articleSample)
+  quill.setContents(deltas)
 }
 
 // auto save
 let change = new Delta()
-window.autoSave = false
+window.autoSave = true
 quill.on('text-change', function(delta) {
   change = change.compose(delta)
 })
