@@ -223,12 +223,12 @@ InlineLexer.prototype.outputLink = async function(cap, link) {
     return this.deltaMaker.link(href, title, await this.output(cap[1]))
   }
   else {
-    if (sanitize(href, ['https', 'http', 'data'])) {
+    if (href.match(this.rules.url)) {
       return this.deltaMaker.image(href)
     }
     else {
-      let filename = href.slice(2)
-      let attachment = this.attachments(filename)
+      console.log(this.attachments)
+      let attachment = this.attachments[href]
       if (!attachment) {
         return this.deltaMaker.image('//:0')
       }

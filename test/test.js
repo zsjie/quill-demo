@@ -1,14 +1,27 @@
 const marked = require('marked')
 const Delta = require('quill-delta')
 
-console.log(marked('+abc+'))
+let foo = {
+  foo: 'bar'
+}
+let bar = {
+  foo: 'foo'
+}
+
+function sanitize(url, protocols) {
+  let anchor = document.createElement('a');
+  anchor.href = url;
+  let protocol = anchor.href.slice(0, anchor.href.indexOf(':'));
+  return protocols.indexOf(protocol) > -1;
+}
+
+console.log(sanitize('abc.com'))
 
 function InlineLexer () {
   this.renderer = new Renderer()
   this.rules = {
     strong: /^__([\s\S]+?)__(?!_)|^\*\*([\s\S]+?)\*\*(?!\*)/,
     del: /^~~(?=\S)([\s\S]*?\S)~~/,
-    em: /^\b_((?:[^_]|__)+?)_\b|^\*((?:\*\*|[\s\S])+?)\*(?!\*)/,
     u: /^\+\+([\s\S]+?)\+\+(?!\+)/,
   }
 }
@@ -24,28 +37,22 @@ InlineLexer.prototype.output = async function (src) {
       continue
     }
     
-    if (cap = this.rules.em.exec(src)) {
+    if (cap = this.rules.u.exec(src)) {
       src = src.substring(cap[0].length)
-      out += this.renderer.em((await this.output(cap[2])) || cap[1])
+      out += this.renderer.u((await this.output(cap[2])) || cap[1])
       continue
     }
   
     if (cap = this.rules.del.exec(src)) {
       src = src.substring(cap[0].length)
-      out += this.renderer.del(this.output(cap[1]))
+      out += this.renderer.del(await this.output(cap[1]))
     }
   }
   
   return out
 }
 
-InlineLexer.prototype.outputLink = async function () {
-  return await Promise.resolve('a')
-}
-
-function Renderer () {
-
-}
+function Renderer () {}
 
 // span level renderer
 Renderer.prototype.strong = async function(text) {
@@ -64,26 +71,7 @@ Renderer.prototype.u = function(text) {
   return '<u>' + text + '</u>'
 }
 
-function Parser () {
-  this.token
-  this.tokens = [1,2,3,4]
-}
-
-Parser.parse = async function () {
-  let parser = new Parser()
-  return await parser.parse()
-}
-
-Parser.prototype.parse = async function () {
-  let result = 0
-  
-  while (await this.next()) {
-    result += this.token
-  }
-  
-  return result
-}
-
-Parser.prototype.next = async function () {
-  return this.token = this.tokens.shift()
-}
+let inlineLexer = new InlineLexer()
+inlineLexer.output('**~~++abc++~~**').then(out => {
+  console.log(out)
+})

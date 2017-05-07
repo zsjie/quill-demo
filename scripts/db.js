@@ -73,7 +73,7 @@ DB.prototype.getFileByFileId = async function (fileId) {
   let store = tx.objectStore(this.DB_STORE_NAME)
   
   return new Promise((resolve, reject) => {
-    let req = objectStore.get(fileId);
+    let req = store.get(fileId);
     
     req.onsuccess = (evt) => {
       resolve(evt.target.result.file)

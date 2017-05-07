@@ -10,7 +10,7 @@ import { emptyLines, mergeOps } from './helpers'
 function Parser(options) {
   this.tokens = []
   this.token = null
-  this.options = options || defaults
+  this.options = options ? Object.assign(defaults, options) : defaults
   this.options.deltaMaker = this.options.deltaMaker || new DeltaMaker
   this.deltaMaker = this.options.deltaMaker
   this.deltaMaker.options = this.options
