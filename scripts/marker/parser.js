@@ -107,7 +107,7 @@ Parser.prototype.tok = async function () {
     }
     case 'heading': {
       return this.deltaMaker.heading(
-        this.inline.output(this.token.text),
+        await this.inline.output(this.token.text),
         this.token.depth)
     }
     case 'code': {
@@ -129,7 +129,7 @@ Parser.prototype.tok = async function () {
       for (i = 0; i < this.token.header.length; i++) {
         flags = {header: true, align: this.token.align[i]}
         cell += this.deltaMaker.tablecell(
-          this.inline.output(this.token.header[i]),
+          await this.inline.output(this.token.header[i]),
           {header: true, align: this.token.align[i]}
         )
       }
@@ -141,7 +141,7 @@ Parser.prototype.tok = async function () {
         cell = ''
         for (j = 0; j < row.length; j++) {
           cell += this.deltaMaker.tablecell(
-            this.inline.output(row[j]),
+            await this.inline.output(row[j]),
             {header: false, align: this.token.align[j]}
           )
         }
@@ -209,14 +209,14 @@ Parser.prototype.tok = async function () {
     }
     case 'html': {
       let html = !this.token.pre && !this.options.pedantic
-        ? this.inline.output(this.token.text)
+        ? await this.inline.output(this.token.text)
         : this.token.text
       return this.deltaMaker.html(html)
     }
     case 'paragraph': {
       if (this.inBlockquote) {
         let text  = this.token.text
-        let delta = this.inline.output(text)
+        let delta = await this.inline.output(text)
         
         if (this.peek().type === 'newline') {
           delta.push({
@@ -250,7 +250,7 @@ Parser.prototype.tok = async function () {
           }
         }
         
-        let deltas = this.inline.output(text)
+        let deltas = await this.inline.output(text)
         
         return this.deltaMaker.paragraph(deltas)
       }
