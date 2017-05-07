@@ -103,4 +103,12 @@ describe('expander', () => {
       .insert(' bar\n')
     expect(expander(delta)).to.equal('**~~foo~~** bar\n')
   })
+  
+  it('should expand inline formula', () => {
+    let delta  = new Delta()
+      .insert('foo ')
+      .insert({ formula: 'e=mc^2' })
+      .insert('bar\n')
+    expect(expander(delta)).to.equal('foo $e=mc^2$bar\n')
+  })
 })

@@ -92,17 +92,28 @@ describe('marker', () => {
       expect(stringify(mDelta)).to.equal(stringify(delta))
     })
   })
-})
-
-it('should make out code block of gfm style', () => {
-  let md = '```\nlet a = 1\n\n\nlet b = 2```\n'
-  let delta = new Delta()
-    .insert('let a = 1')
-    .insert('\n\n\n', { 'code-block': true })
-    .insert('let b = 2')
-    .insert('\n', { 'code-block': true })
-  return marker(md).then(mDelta => {
-    expect(stringify(mDelta)).to.equal(stringify(delta))
+  
+  it('should make out code block of gfm style', () => {
+    let md = '```\nlet a = 1\n\n\nlet b = 2```\n'
+    let delta = new Delta()
+      .insert('let a = 1')
+      .insert('\n\n\n', { 'code-block': true })
+      .insert('let b = 2')
+      .insert('\n', { 'code-block': true })
+    return marker(md).then(mDelta => {
+      expect(stringify(mDelta)).to.equal(stringify(delta))
+    })
+  })
+  
+  it('should make out inline formula', () => {
+    let md = `foo $e=mc^2$bar\n`
+    let delta  = new Delta()
+      .insert('foo ')
+      .insert({ formula: 'e=mc^2' })
+      .insert('bar\n')
+    return marker(md).then(mDelta => {
+      expect(stringify(mDelta)).to.equal(stringify(delta))
+    })
   })
 })
 

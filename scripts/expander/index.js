@@ -85,8 +85,13 @@ export default function (delta, attachments) {
           newLine += insert
         }
       }
-      else { // image
-        newLine += formatter('image', getFilename(attachments, insert.image))
+      else {
+        if (insert.image) { // image
+          newLine += formatter('image', getFilename(attachments, insert.image))
+        }
+        else if (insert.formula) { // formula
+          newLine += formatter('formula', insert.formula)
+        }
       }
     }
     

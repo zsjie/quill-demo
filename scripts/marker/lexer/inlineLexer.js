@@ -194,6 +194,14 @@ InlineLexer.prototype.output = async function(src) {
       continue
     }
     
+    // mathInline
+    if (cap = this.rules.mathInline.exec(src)) {
+      src = src.substring(cap[0].length)
+      delta = this.deltaMaker.formula(cap[1])
+      out = out.concat(delta)
+      continue
+    }
+    
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length)
@@ -227,7 +235,6 @@ InlineLexer.prototype.outputLink = async function(cap, link) {
       return this.deltaMaker.image(href)
     }
     else {
-      console.log(this.attachments)
       let attachment = this.attachments[href]
       if (!attachment) {
         return this.deltaMaker.image('//:0')

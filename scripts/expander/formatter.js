@@ -8,6 +8,7 @@ let formats = {
   underline,
   link,
   image,
+  formula,
   'code-block': fences
 }
 
@@ -64,6 +65,10 @@ function image (href, alt, title) {
   alt = alt ? alt : 'alt text'
   return title ? `![${alt}](${href} "${title}")`
                : `![${alt}](${href})`
+}
+
+function formula (text) {
+  return `\$${text}\$`
 }
 
 // helpers

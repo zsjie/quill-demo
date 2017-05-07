@@ -13,7 +13,8 @@ let block = {
   html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
   def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
   table: noop,
-  paragraph: /^((?:[^\n]+(?!hr|heading|lheading|blockquote|tag|def))+)(?:\n|$)/,
+  math: /^ *(\${2})\s*([\s\S]*?)\s*\1 *(?:\n|$)/,
+  paragraph: /^((?:[^\n]+(?!hr|heading|lheading|blockquote|tag|def|math))+)(?:\n|$)/,
   text: /^[^\n]+/
 }
 
@@ -52,6 +53,7 @@ block.paragraph = replace(block.paragraph)
   ('blockquote', block.blockquote)
   ('tag', '<' + block._tag)
   ('def', block.def)
+  ('math', block.math)
   ()
 
 /**

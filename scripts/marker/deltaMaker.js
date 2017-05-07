@@ -145,4 +145,8 @@ DeltaMaker.prototype.tag = function (text) {
   return { insert: text }
 }
 
+DeltaMaker.prototype.formula = function (text) {
+  return [{ insert: { formula: text } }]
+}
+
 export default DeltaMaker
